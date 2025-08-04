@@ -1,0 +1,29 @@
+<svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="menGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a365d;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2d3748;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#menGradient)"/>
+  
+  <!-- Cologne bottle silhouette -->
+  <g transform="translate(150, 50)">
+    <!-- Bottle body -->
+    <rect x="20" y="60" width="60" height="120" rx="8" fill="#4a5568" opacity="0.8"/>
+    <!-- Bottle neck -->
+    <rect x="35" y="40" width="30" height="25" fill="#4a5568" opacity="0.8"/>
+    <!-- Cap -->
+    <rect x="30" y="30" width="40" height="15" rx="3" fill="#2d3748"/>
+    <!-- Label -->
+    <rect x="25" y="80" width="50" height="30" fill="#8B5CF6" opacity="0.6"/>
+  </g>
+  
+  <!-- Decorative elements -->
+  <circle cx="80" cy="80" r="3" fill="#8B5CF6" opacity="0.4"/>
+  <circle cx="320" cy="220" r="4" fill="#8B5CF6" opacity="0.3"/>
+  <circle cx="350" cy="100" r="2" fill="#8B5CF6" opacity="0.5"/>
+  
+  <!-- Text overlay -->
+  <text x="200" y="250" text-anchor="middle" fill="white" font-family="Inter, sans-serif" font-size="24" font-weight="600">MEN</text>
+</svg>

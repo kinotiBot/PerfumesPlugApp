@@ -1,0 +1,41 @@
+<svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="womenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ec4899;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#be185d;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#womenGradient)"/>
+  
+  <!-- Elegant perfume bottle -->
+  <g transform="translate(160, 40)">
+    <!-- Bottle body (curved) -->
+    <ellipse cx="40" cy="100" rx="35" ry="80" fill="#f3e8ff" opacity="0.9"/>
+    <!-- Bottle neck -->
+    <rect x="30" y="30" width="20" height="30" fill="#f3e8ff" opacity="0.9"/>
+    <!-- Decorative cap -->
+    <ellipse cx="40" cy="25" rx="15" ry="8" fill="#fbbf24"/>
+    <!-- Label -->
+    <rect x="20" y="80" width="40" height="25" fill="#ec4899" opacity="0.7"/>
+  </g>
+  
+  <!-- Floral decorative elements -->
+  <g transform="translate(80, 120)">
+    <circle cx="0" cy="0" r="8" fill="#fbbf24" opacity="0.6"/>
+    <circle cx="15" cy="-5" r="6" fill="#fbbf24" opacity="0.4"/>
+    <circle cx="-10" cy="10" r="5" fill="#fbbf24" opacity="0.5"/>
+  </g>
+  
+  <g transform="translate(280, 180)">
+    <circle cx="0" cy="0" r="6" fill="#fbbf24" opacity="0.5"/>
+    <circle cx="12" cy="-3" r="4" fill="#fbbf24" opacity="0.3"/>
+    <circle cx="-8" cy="8" r="3" fill="#fbbf24" opacity="0.4"/>
+  </g>
+  
+  <!-- Sparkle effects -->
+  <polygon points="320,60 325,70 335,70 327,78 330,88 320,82 310,88 313,78 305,70 315,70" fill="#fbbf24" opacity="0.7"/>
+  <polygon points="100,200 103,206 109,206 105,210 107,216 100,213 93,216 95,210 91,206 97,206" fill="#fbbf24" opacity="0.6"/>
+  
+  <!-- Text overlay -->
+  <text x="200" y="250" text-anchor="middle" fill="white" font-family="Inter, sans-serif" font-size="24" font-weight="600">WOMEN</text>
+</svg>

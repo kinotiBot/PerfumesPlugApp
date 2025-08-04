@@ -1,0 +1,51 @@
+<svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="luxuryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1f2937;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#111827;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#f59e0b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d97706;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#luxuryGradient)"/>
+  
+  <!-- Luxury perfume bottle -->
+  <g transform="translate(150, 40)">
+    <!-- Ornate bottle body -->
+    <rect x="25" y="70" width="50" height="90" rx="6" fill="url(#goldGradient)" opacity="0.9"/>
+    <!-- Decorative neck -->
+    <rect x="35" y="50" width="30" height="25" fill="url(#goldGradient)" opacity="0.9"/>
+    <!-- Luxury cap with details -->
+    <rect x="30" y="35" width="40" height="20" rx="4" fill="#fbbf24"/>
+    <rect x="32" y="37" width="36" height="16" rx="2" fill="#f59e0b"/>
+    <!-- Ornate label -->
+    <rect x="30" y="90" width="40" height="35" fill="#1f2937" opacity="0.8"/>
+    <rect x="32" y="92" width="36" height="31" fill="#fbbf24" opacity="0.3"/>
+  </g>
+  
+  <!-- Luxury decorative elements -->
+  <g transform="translate(80, 100)">
+    <!-- Crown-like decoration -->
+    <polygon points="0,0 10,-10 20,0 15,10 5,10" fill="#fbbf24" opacity="0.7"/>
+    <circle cx="10" cy="5" r="2" fill="#f59e0b"/>
+  </g>
+  
+  <g transform="translate(290, 160)">
+    <polygon points="0,0 8,-8 16,0 12,8 4,8" fill="#fbbf24" opacity="0.6"/>
+    <circle cx="8" cy="4" r="1.5" fill="#f59e0b"/>
+  </g>
+  
+  <!-- Diamond shapes -->
+  <polygon points="320,80 330,70 340,80 330,90" fill="#fbbf24" opacity="0.8"/>
+  <polygon points="100,200 108,192 116,200 108,208" fill="#fbbf24" opacity="0.7"/>
+  
+  <!-- Elegant swirls -->
+  <path d="M 60 180 Q 70 170 80 180 Q 90 190 100 180" stroke="#fbbf24" stroke-width="2" fill="none" opacity="0.6"/>
+  <path d="M 300 220 Q 310 210 320 220 Q 330 230 340 220" stroke="#fbbf24" stroke-width="2" fill="none" opacity="0.5"/>
+  
+  <!-- Text overlay -->
+  <text x="200" y="250" text-anchor="middle" fill="#fbbf24" font-family="Inter, sans-serif" font-size="24" font-weight="600">LUXURY</text>
+</svg>
