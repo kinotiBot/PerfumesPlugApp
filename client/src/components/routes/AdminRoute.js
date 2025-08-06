@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 const AdminRoute = ({ children }) => {
-  const { isAuthenticated, user, loading } = useSelector((state) => state.auth);
+  const { isAuthenticated, userInfo, loading } = useSelector((state) => state.auth);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -13,11 +13,11 @@ const AdminRoute = ({ children }) => {
     return <Navigate to="/login" />;
   }
 
-  if (!user?.is_staff) {
+  if (!userInfo?.is_staff) {
     return <Navigate to="/" />;
   }
 
   return children;
-};
+}
 
 export default AdminRoute;

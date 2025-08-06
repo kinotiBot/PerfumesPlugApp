@@ -132,7 +132,7 @@ export const cancelOrder = createAsyncThunk(
 // Get all orders (admin)
 export const getAllOrders = createAsyncThunk(
   'order/getAllOrders',
-  async (_, { getState, rejectWithValue }) => {
+  async (params = {}, { getState, rejectWithValue }) => {
     try {
       const { auth } = getState();
       const config = {
@@ -140,7 +140,18 @@ export const getAllOrders = createAsyncThunk(
           Authorization: `Bearer ${auth.userToken}`,
         },
       };
-      const { data } = await axios.get(getApiUrl('/api/orders/'), config);
+      
+      // Build query parameters
+      const queryParams = new URLSearchParams();
+      if (params.page) queryParams.append('page', params.page);
+      if (params.limit) queryParams.append('limit', params.limit);
+      if (params.status) queryParams.append('status', params.status);
+      if (params.order_id) queryParams.append('order_id', params.order_id);
+      
+      const queryString = queryParams.toString();
+      const url = queryString ? `/api/orders/?${queryString}` : '/api/orders/';
+      
+      const { data } = await axios.get(getApiUrl(url), config);
       return data;
     } catch (error) {
       if (error.response && error.response.data.message) {
@@ -155,7 +166,7 @@ export const getAllOrders = createAsyncThunk(
 // Update order status (admin)
 export const updateOrderStatus = createAsyncThunk(
   'order/updateOrderStatus',
-  async ({ id, status }, { getState, rejectWithValue }) => {
+  async ({ orderId, status }, { getState, rejectWithValue }) => {
     try {
       const { auth } = getState();
       const config = {
@@ -165,7 +176,7 @@ export const updateOrderStatus = createAsyncThunk(
         },
       };
       const { data } = await axios.put(
-        getApiUrl(`/api/orders/${id}/`),
+        getApiUrl(`/api/orders/${orderId}/`),
         { status },
         config
       );
@@ -215,11 +226,13 @@ const orderSlice = createSlice({
       })
       .addCase(getUserOrders.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.orders = payload;
+        // Ensure orders is always an array
+        state.orders = Array.isArray(payload) ? payload : (payload?.results || payload?.orders || []);
       })
       .addCase(getUserOrders.rejected, (state, { payload }) => {
         state.loading = false;
         state.error = payload;
+        state.orders = []; // Reset to empty array on error
       })
       // Get order details
       .addCase(getOrderDetails.pending, (state) => {
@@ -252,11 +265,13 @@ const orderSlice = createSlice({
       })
       .addCase(getAllOrders.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.orders = payload;
+        // Ensure orders is always an array
+        state.orders = Array.isArray(payload) ? payload : (payload?.results || payload?.orders || []);
       })
       .addCase(getAllOrders.rejected, (state, { payload }) => {
         state.loading = false;
         state.error = payload;
+        state.orders = []; // Reset to empty array on error
       })
       // Update order status (admin)
       .addCase(updateOrderStatus.pending, (state) => {

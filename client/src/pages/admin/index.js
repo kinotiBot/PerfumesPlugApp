@@ -6,6 +6,7 @@ import Categories from './Categories';
 import Brands from './Brands';
 import Customers from './Customers';
 import Settings from './Settings';
+import SuperuserPanel from './SuperuserPanel';
 
 export {
   Dashboard,
@@ -15,5 +16,6 @@ export {
   Categories,
   Brands,
   Customers,
-  Settings
+  Settings,
+  SuperuserPanel
 };

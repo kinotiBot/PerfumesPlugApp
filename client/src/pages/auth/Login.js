@@ -18,14 +18,14 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { loginUser, clearError } from '../../features/auth/authSlice';
+import { loginUser, clearError, getUserProfile } from '../../features/auth/authSlice';
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { loading, error, isAuthenticated } = useSelector(
+  const { loading, error, isAuthenticated, userInfo } = useSelector(
     (state) => state.auth
   );
 
@@ -34,10 +34,16 @@ const Login = () => {
   const redirect = location.search ? location.search.split('=')[1] : '/';
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && userInfo) {
       navigate(redirect);
     }
-  }, [isAuthenticated, navigate, redirect]);
+  }, [isAuthenticated, userInfo, navigate, redirect]);
+
+  useEffect(() => {
+    if (isAuthenticated && !userInfo) {
+      dispatch(getUserProfile());
+    }
+  }, [isAuthenticated, userInfo, dispatch]);
 
   const formik = useFormik({
     initialValues: {
@@ -86,6 +92,16 @@ const Login = () => {
               {error}
             </Alert>
           )}
+
+          {/* Admin Access Info */}
+          <Box sx={{ mb: 2, p: 2, bgcolor: 'primary.50', borderRadius: 1, border: '1px solid', borderColor: 'primary.200' }}>
+            <Typography variant="body2" color="primary.main" sx={{ fontWeight: 600, mb: 1 }}>
+              🔐 Admin Access
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              Staff accounts can access the admin panel after login. Admin features include inventory management, order processing, and user administration.
+            </Typography>
+          </Box>
 
           <Box
             component="form"

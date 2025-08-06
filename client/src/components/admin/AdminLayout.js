@@ -30,6 +30,8 @@ import {
   Settings as SettingsIcon,
   ExitToApp as ExitToAppIcon,
   AccountCircle,
+  AdminPanelSettings,
+  Warehouse as WarehouseIcon,
 } from '@mui/icons-material';
 
 const drawerWidth = 240;
@@ -37,7 +39,7 @@ const drawerWidth = 240;
 const AdminLayout = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const { userInfo, isAuthenticated } = useSelector((state) => state.auth);
   
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -68,20 +70,39 @@ const AdminLayout = ({ children }) => {
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/admin' },
     { text: 'Products', icon: <InventoryIcon />, path: '/admin/perfumes' },
+    { text: 'Inventory', icon: <WarehouseIcon />, path: '/admin/inventory' },
     { text: 'Categories', icon: <CategoryIcon />, path: '/admin/categories' },
     { text: 'Brands', icon: <CategoryIcon />, path: '/admin/brands' },
     { text: 'Orders', icon: <ShoppingCartIcon />, path: '/admin/orders' },
     { text: 'Customers', icon: <PeopleIcon />, path: '/admin/customers' },
     { text: 'Settings', icon: <SettingsIcon />, path: '/admin/settings' },
+    ...(userInfo?.is_superuser ? [{ text: 'Superuser Panel', icon: <AdminPanelSettings />, path: '/admin/superuser' }] : []),
   ];
 
   const drawer = (
     <div>
       <Toolbar>
-        <Typography variant="h6" noWrap component="div">
-          Admin Panel
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <AdminPanelSettings sx={{ color: 'primary.main' }} />
+          <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 600 }}>
+            Admin Panel
+          </Typography>
+        </Box>
       </Toolbar>
+      <Divider />
+      
+      {/* User Info Section */}
+      <Box sx={{ p: 2, bgcolor: 'grey.50' }}>
+        <Typography variant="body2" color="text.secondary">
+          Logged in as:
+        </Typography>
+        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+          {userInfo?.first_name} {userInfo?.last_name}
+        </Typography>
+        <Typography variant="caption" color="primary.main">
+          {userInfo?.is_superuser ? 'Super Administrator' : 'Staff Member'}
+        </Typography>
+      </Box>
       <Divider />
       <List>
         {menuItems.map((item) => (
@@ -110,7 +131,7 @@ const AdminLayout = ({ children }) => {
     </div>
   );
 
-  if (!isAuthenticated || !user || !user.is_staff) {
+  if (!isAuthenticated || !userInfo || !userInfo.is_staff) {
     return (
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4 }}>
         <Typography variant="h5" gutterBottom>
@@ -163,9 +184,9 @@ const AdminLayout = ({ children }) => {
               onClick={handleProfileMenuOpen}
               color="inherit"
             >
-              {user?.first_name ? (
+              {userInfo?.first_name ? (
                 <Avatar sx={{ bgcolor: 'secondary.main' }}>
-                  {user.first_name[0]}{user.last_name[0]}
+                  {userInfo.first_name[0]}{userInfo.last_name[0]}
                 </Avatar>
               ) : (
                 <AccountCircle />

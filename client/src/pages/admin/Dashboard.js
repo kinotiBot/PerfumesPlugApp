@@ -5,7 +5,6 @@ import {
   Box,
   Container,
   Grid,
-  Paper,
   Typography,
   Card,
   CardContent,
@@ -17,6 +16,7 @@ import {
   ListItemAvatar,
   Avatar,
   CircularProgress,
+  Button,
 } from '@mui/material';
 import {
   ShoppingCart,
@@ -33,7 +33,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   
   const { orders, loading } = useSelector((state) => state.order);
-  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const { userInfo, isAuthenticated } = useSelector((state) => state.auth);
 
   const [stats, setStats] = useState({
     totalSales: 0,
@@ -51,18 +51,18 @@ const Dashboard = () => {
       return;
     }
 
-    if (!user || !user.is_staff) {
+    if (!userInfo || !userInfo.is_staff) {
       navigate('/');
       return;
     }
 
     dispatch(getAllOrders());
-  }, [dispatch, isAuthenticated, navigate, user]);
+  }, [dispatch, isAuthenticated, navigate, userInfo]);
 
   useEffect(() => {
     if (orders) {
       const totalSales = orders.reduce(
-        (sum, order) => sum + order.total_price,
+        (sum, order) => sum + (order.total_amount || order.total_price || 0),
         0
       );
       const pendingOrders = orders.filter(
@@ -114,10 +114,64 @@ const Dashboard = () => {
 
   return (
     <AdminLayout>
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <Typography variant="h4" gutterBottom>
-          Dashboard
-        </Typography>
+        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Typography variant="h4">
+            Admin Dashboard
+          </Typography>
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => navigate('/admin/perfumes')}
+              startIcon={<Inventory />}
+            >
+              Manage Inventory
+            </Button>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => navigate('/admin/orders')}
+              startIcon={<ShoppingCart />}
+            >
+              View Orders
+            </Button>
+          </Box>
+        </Box>
+
+        {/* Quick Access Cards */}
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          <Grid item xs={12} md={6}>
+            <Card sx={{ p: 2, cursor: 'pointer', '&:hover': { boxShadow: 4 } }} onClick={() => navigate('/admin/perfumes')}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Avatar sx={{ bgcolor: 'primary.main' }}>
+                  <Inventory />
+                </Avatar>
+                <Box>
+                  <Typography variant="h6">Product Management</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Add, edit, and manage perfume inventory
+                  </Typography>
+                </Box>
+              </Box>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Card sx={{ p: 2, cursor: 'pointer', '&:hover': { boxShadow: 4 } }} onClick={() => navigate('/admin/orders')}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Avatar sx={{ bgcolor: 'warning.main' }}>
+                  <ShoppingCart />
+                </Avatar>
+                <Box>
+                  <Typography variant="h6">Order Processing</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Process and manage customer orders
+                  </Typography>
+                </Box>
+              </Box>
+            </Card>
+          </Grid>
+        </Grid>
 
         <Grid container spacing={3}>
           {/* Total Sales */}
@@ -136,7 +190,7 @@ const Dashboard = () => {
                       TOTAL SALES
                     </Typography>
                     <Typography variant="h4">
-                      ${stats.totalSales.toFixed(2)}
+                      ${(stats.totalSales || 0).toFixed(2)}
                     </Typography>
                   </Box>
                   <Avatar
@@ -381,7 +435,7 @@ const Dashboard = () => {
                                 variant="body2"
                                 color="text.primary"
                               >
-                                ${order.total_price.toFixed(2)}
+                                ${(order.total_price || 0).toFixed(2)}
                               </Typography>
                               {` — ${new Date(
                                 order.created_at

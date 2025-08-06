@@ -81,7 +81,7 @@ export const getOnSalePerfumes = createAsyncThunk(
   'perfume/getOnSalePerfumes',
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await axios.get('/api/perfumes/on-sale/');
+      const { data } = await axios.get('/api/perfumes/on_sale/');
       return data;
     } catch (error) {
       if (error.response && error.response.data.message) {
@@ -98,7 +98,7 @@ export const getAllPerfumes = createAsyncThunk(
   'perfume/getAllPerfumes',
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await axios.get('/api/perfumes/all/');
+      const { data } = await axios.get('/api/perfumes/');
       return data;
     } catch (error) {
       if (error.response && error.response.data.message) {
@@ -238,7 +238,7 @@ const perfumeSlice = createSlice({
       })
       .addCase(getAllPerfumes.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.perfumes = payload;
+        state.perfumes = payload.results || payload;
       })
       .addCase(getAllPerfumes.rejected, (state, { payload }) => {
         state.loading = false;

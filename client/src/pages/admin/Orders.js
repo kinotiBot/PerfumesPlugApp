@@ -189,7 +189,7 @@ const Orders = () => {
                     <CircularProgress />
                   </TableCell>
                 </TableRow>
-              ) : orders.length === 0 ? (
+              ) : !Array.isArray(orders) || orders.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={8} align="center">
                     No orders found
@@ -208,14 +208,20 @@ const Orders = () => {
                     <TableCell align="right">${order.total_amount}</TableCell>
                     <TableCell align="center">
                       <Chip
-                        label={order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                        label={order.status ? 
+                          order.status.charAt(0).toUpperCase() + order.status.slice(1) : 
+                          'Unknown'
+                        }
                         color={getStatusColor(order.status)}
                         size="small"
                       />
                     </TableCell>
                     <TableCell align="center">
                       <Chip
-                        label={order.payment_status.charAt(0).toUpperCase() + order.payment_status.slice(1)}
+                        label={order.payment_status ? 
+                          order.payment_status.charAt(0).toUpperCase() + order.payment_status.slice(1) : 
+                          'Unknown'
+                        }
                         color={getPaymentStatusColor(order.payment_status)}
                         size="small"
                       />
@@ -285,7 +291,10 @@ const Orders = () => {
                     <Typography>
                       Status: 
                       <Chip
-                        label={selectedOrder.payment_status.charAt(0).toUpperCase() + selectedOrder.payment_status.slice(1)}
+                        label={selectedOrder.payment_status ? 
+                          selectedOrder.payment_status.charAt(0).toUpperCase() + selectedOrder.payment_status.slice(1) : 
+                          'Unknown'
+                        }
                         color={getPaymentStatusColor(selectedOrder.payment_status)}
                         size="small"
                         sx={{ ml: 1 }}

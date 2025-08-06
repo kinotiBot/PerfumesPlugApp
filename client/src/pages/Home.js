@@ -29,6 +29,7 @@ import {
 import { addToCart } from '../features/cart/cartSlice';
 import { getImageUrl } from '../utils/api';
 import { LocalShipping, VerifiedUser, SupportAgent, Security, ShoppingCart } from '@mui/icons-material';
+import AdminWelcome from '../components/admin/AdminWelcome';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -180,6 +181,8 @@ const Home = () => {
 
   return (
     <Box>
+      {/* Admin Welcome Section for Staff Users */}
+      <AdminWelcome />
       {/* Hero Section */}
       <Paper
         sx={{

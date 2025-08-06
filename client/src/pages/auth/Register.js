@@ -65,6 +65,7 @@ const Register = () => {
     }),
     onSubmit: (values) => {
       const { confirm_password, ...userData } = values;
+      userData.password2 = confirm_password;
       dispatch(registerUser(userData));
     },
   });

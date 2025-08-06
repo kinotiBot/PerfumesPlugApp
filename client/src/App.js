@@ -21,7 +21,8 @@ import RegisterPage from './pages/auth/Register';
 import ProfilePage from './pages/Profile';
 
 // Admin Pages
-import { Dashboard, Products, Orders, Users, Categories, Brands, Customers, Settings } from './pages/admin';
+import { Dashboard, Products, Orders, Users, Categories, Brands, Customers, Settings, SuperuserPanel } from './pages/admin';
+import PerfumeInventory from './pages/admin/PerfumeInventory';
 
 // Auth
 import PrivateRoute from './components/routes/PrivateRoute';
@@ -94,6 +95,11 @@ const App = () => {
               <Products />
             </AdminRoute>
           } />
+          <Route path="/admin/inventory" element={
+            <AdminRoute>
+              <PerfumeInventory />
+            </AdminRoute>
+          } />
           <Route path="/admin/orders" element={
             <AdminRoute>
               <Orders />
@@ -122,6 +128,11 @@ const App = () => {
           <Route path="/admin/settings" element={
             <AdminRoute>
               <Settings />
+            </AdminRoute>
+          } />
+          <Route path="/admin/superuser" element={
+            <AdminRoute>
+              <SuperuserPanel />
             </AdminRoute>
           } />
         </Routes>
