@@ -94,11 +94,11 @@ const Login = () => {
           )}
 
           {/* Admin Access Info */}
-          <Box sx={{ mb: 2, p: 2, bgcolor: 'primary.50', borderRadius: 1, border: '1px solid', borderColor: 'primary.200' }}>
-            <Typography variant="body2" color="primary.main" sx={{ fontWeight: 600, mb: 1 }}>
+          <Box sx={{ mb: 2, p: 2, bgcolor: '#1A1A1A', borderRadius: 1, border: '1px solid', borderColor: '#FFD700' }}>
+            <Typography variant="body2" color="#FFD700" sx={{ fontWeight: 600, mb: 1 }}>
               🔐 Admin Access
             </Typography>
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant="caption" color="#F8F8F8">
               Staff accounts can access the admin panel after login. Admin features include inventory management, order processing, and user administration.
             </Typography>
           </Box>

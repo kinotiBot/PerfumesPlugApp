@@ -85,8 +85,22 @@ const Home = () => {
   const renderPerfumeCard = (perfume) => (
     <Card
       key={perfume.id}
-      className="product-card"
-      sx={{ m: 1, height: '100%', display: 'flex', flexDirection: 'column' }}
+      className="product-card luxury-transition"
+      sx={{ 
+        m: 2, 
+        height: '100%', 
+        display: 'flex', 
+        flexDirection: 'column',
+        border: '1px solid rgba(255, 215, 0, 0.2)',
+        borderRadius: 3,
+        overflow: 'hidden',
+        position: 'relative',
+        '&:hover': {
+          transform: 'translateY(-8px) scale(1.02)',
+          boxShadow: '0 20px 40px rgba(255, 215, 0, 0.2), 0 8px 24px rgba(0, 0, 0, 0.15)',
+          borderColor: 'rgba(255, 215, 0, 0.5)',
+        }
+      }}
     >
       {perfume.on_sale && (
         <Chip
@@ -109,34 +123,52 @@ const Home = () => {
       )}
       <CardMedia
         component="img"
-        height="200"
+        height="280"
         image={perfume.images && perfume.images.length > 0 ? getImageUrl(perfume.images[0].image) : getImageUrl(perfume.image)}
         alt={perfume.name}
+        sx={{
+          transition: 'transform 0.3s ease',
+          '&:hover': {
+            transform: 'scale(1.05)',
+          }
+        }}
       />
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Typography variant="subtitle1" component="div" noWrap sx={{ mb: 0.5 }}>
-          <span className="brand-name">{perfume.brand ? perfume.brand.name : ''}</span>
+      <CardContent sx={{ flexGrow: 1, p: 3 }}>
+        <Typography variant="h6" component="div" sx={{ mb: 1, lineHeight: 1.3 }}>
+          <span className="brand-name" style={{ color: '#FFD700', fontWeight: 600, fontSize: '0.9rem' }}>
+            {perfume.brand ? perfume.brand.name : ''}
+          </span>
           <br />
-          <span className="product-name">{perfume.name}</span>
+          <span className="product-name" style={{ color: '#1F2937', fontWeight: 700 }}>
+            {perfume.name}
+          </span>
         </Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
           <Rating
             name={`rating-${perfume.id}`}
             value={4.5}
             precision={0.5}
             size="small"
             readOnly
+            sx={{
+              '& .MuiRating-iconFilled': {
+                color: '#FFD700',
+              }
+            }}
           />
-          <Typography variant="body2" sx={{ ml: 1 }}>
+          <Typography variant="body2" sx={{ ml: 1, color: '#6B7280', fontWeight: 500 }}>
             (4.5)
           </Typography>
         </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
           <Typography
-            variant="h6"
-            color="primary"
+            variant="h5"
             className="price-text"
-            sx={{ fontWeight: 600 }}
+            sx={{ 
+              fontWeight: 700,
+              color: '#FFD700',
+              textShadow: '0 2px 4px rgba(255, 215, 0, 0.2)'
+            }}
           >
             RWF {perfume.price.toLocaleString()}
           </Typography>
@@ -144,20 +176,43 @@ const Home = () => {
             <Typography
               variant="body2"
               className="price-text"
-              sx={{ ml: 1, textDecoration: 'line-through', color: '#A0AEC0', fontWeight: 400 }}
+              sx={{ 
+                ml: 2, 
+                textDecoration: 'line-through', 
+                color: '#B0B0B0', 
+                fontWeight: 500,
+                fontSize: '0.9rem'
+              }}
             >
               RWF {perfume.regular_price.toLocaleString()}
             </Typography>
           )}
         </Box>
       </CardContent>
-      <CardActions>
+      <CardActions sx={{ p: 3, pt: 0 }}>
         <Button
-          size="small"
+          size="large"
           variant="contained"
           startIcon={<ShoppingCart />}
           onClick={() => handleAddToCart(perfume.id)}
           fullWidth
+          sx={{
+            backgroundColor: '#1A1A1A',
+            color: '#FFD700',
+            border: '2px solid #FFD700',
+            fontWeight: 700,
+            py: 1.5,
+            borderRadius: 2,
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            '&:hover': {
+              backgroundColor: '#2A2A2A',
+              transform: 'translateY(-2px)',
+              boxShadow: '0 8px 25px rgba(255, 215, 0, 0.4)',
+            },
+            '&:active': {
+              transform: 'translateY(0)',
+            }
+          }}
         >
           Add to Cart
         </Button>
@@ -187,17 +242,19 @@ const Home = () => {
       <Paper
         sx={{
           position: 'relative',
-          backgroundColor: 'grey.800',
+          backgroundColor: '#000000',
           color: '#fff',
-          mb: 4,
+          mb: 6,
           backgroundSize: 'cover',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',
           backgroundImage: 'url(https://source.unsplash.com/random?perfume)',
-          borderRadius: 2,
+          borderRadius: 3,
           overflow: 'hidden',
+          minHeight: 500,
         }}
       >
+        <div className="hero-particles"></div>
         <Box
           sx={{
             position: 'absolute',
@@ -223,22 +280,37 @@ const Home = () => {
             >
               <Typography
                 component="h1"
-                variant="h3"
+                variant="h1"
                 color="inherit"
                 gutterBottom
                 className="elegant-title"
-                sx={{ fontSize: { xs: '1.5rem', md: '2rem' } }}
+                sx={{ 
+                  fontSize: { xs: '2.5rem', md: '4rem' },
+                  background: 'linear-gradient(135deg, #FFD700, #FFED4A)',
+                  backgroundClip: 'text',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  fontWeight: 800,
+                  letterSpacing: '-0.02em',
+                  textShadow: '0 4px 8px rgba(0,0,0,0.3)'
+                }}
               >
-                Discover Your Signature Scent
+                Discover Your <span style={{ color: '#FFD700' }}>Signature</span> Scent
               </Typography>
               <Typography 
-                variant="h6" 
+                variant="h5" 
                 color="inherit" 
                 paragraph
                 className="subtitle-elegant"
-                sx={{ color: 'rgba(255,255,255,0.9)', fontWeight: 300, fontSize: { xs: '0.9rem', md: '1rem' } }}
+                sx={{ 
+                  color: '#F8F8F8', 
+                  fontWeight: 400, 
+                  fontSize: { xs: '1.1rem', md: '1.5rem' },
+                  lineHeight: 1.4,
+                  mb: 4
+                }}
               >
-                Explore our collection of premium fragrances at unbeatable prices.
+                Explore our collection of <span style={{ color: '#FFD700', fontWeight: 600 }}>premium fragrances</span> at unbeatable prices.
                 Find the perfect perfume that tells your unique story.
               </Typography>
               <Button
@@ -257,22 +329,40 @@ const Home = () => {
       </Paper>
 
       {/* Featured Products */}
-      <Box sx={{ mb: 6 }}>
+      <Box sx={{ mb: 8 }}>
         <Box
           sx={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            mb: 2,
+            mb: 4,
           }}
         >
-          <Typography variant="h5" component="h2">
+          <Typography 
+            variant="h4" 
+            component="h2"
+            sx={{
+              fontWeight: 700,
+              background: 'linear-gradient(135deg, #FFD700, #F59E0B)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
+          >
             Featured Products
           </Typography>
           <Button
             component={RouterLink}
             to="/perfumes?featured=true"
-            color="primary"
+            variant="outlined"
+            sx={{
+              borderColor: '#FFD700',
+              color: '#FFD700',
+              '&:hover': {
+                borderColor: '#FFED4A',
+                backgroundColor: 'rgba(255, 215, 0, 0.1)',
+              }
+            }}
           >
             View All
           </Button>
@@ -292,23 +382,44 @@ const Home = () => {
         )}
       </Box>
 
+      {/* Gold Divider */}
+      <div className="gold-divider"></div>
+
       {/* On Sale Products */}
-      <Box sx={{ mb: 6 }}>
+      <Box sx={{ mb: 8 }}>
         <Box
           sx={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            mb: 2,
+            mb: 4,
           }}
         >
-          <Typography variant="h5" component="h2">
+          <Typography 
+            variant="h4" 
+            component="h2"
+            sx={{
+              fontWeight: 700,
+              background: 'linear-gradient(135deg, #FFD700, #F59E0B)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
+          >
             On Sale
           </Typography>
           <Button
             component={RouterLink}
             to="/perfumes?on_sale=true"
-            color="primary"
+            variant="outlined"
+            sx={{
+              borderColor: '#FFD700',
+              color: '#FFD700',
+              '&:hover': {
+                borderColor: '#FFED4A',
+                backgroundColor: 'rgba(255, 215, 0, 0.1)',
+              }
+            }}
           >
             View All
           </Button>
@@ -443,12 +554,13 @@ const Home = () => {
                 component={RouterLink}
                 to="/perfumes"
                 sx={{
-                  background: 'linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)',
+                  background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+                  color: '#0A0A0A',
                   py: 1.5,
                   px: 4,
                   borderRadius: 2,
                   '&:hover': {
-                    background: 'linear-gradient(135deg, #7C3AED 0%, #DB2777 100%)',
+                    background: 'linear-gradient(135deg, #FFED4A 0%, #FF8C00 100%)',
                     transform: 'translateY(-2px)',
                   },
                   transition: 'all 0.3s ease',

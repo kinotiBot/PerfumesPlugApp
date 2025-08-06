@@ -10,8 +10,8 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #FEFEFE;
-  color: #2D3748;
+  background-color: #0A0A0A;
+  color: #F8F8F8;
   line-height: 1.65;
   font-weight: 400;
 }
@@ -56,7 +56,7 @@ h3 {
   letter-spacing: 0.02em;
   font-size: 0.95em;
   text-transform: uppercase;
-  color: #4A5568;
+  color: #FFD700;
 }
 
 .product-name {
@@ -64,7 +64,7 @@ h3 {
   font-weight: 400;
   letter-spacing: -0.005em;
   font-size: 1.05em;
-  color: #2D3748;
+  color: #F8F8F8;
 }
 
 /* Enhanced Typography Classes */
@@ -79,7 +79,7 @@ h3 {
   font-family: 'Inter', sans-serif;
   font-weight: 300;
   letter-spacing: 0.01em;
-  color: #718096;
+  color: #B0B0B0;
   font-size: 0.95rem;
   line-height: 1.6;
 }
@@ -95,7 +95,7 @@ h3 {
   font-family: 'Inter', sans-serif;
   font-weight: 500;
   font-size: 0.75rem;
-  color: #6B7280;
+  color: #FFD700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -104,7 +104,7 @@ h3 {
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   font-size: 0.875rem;
-  color: #1F2937;
+  color: #F8F8F8;
   line-height: 1.4;
 }
 
@@ -113,14 +113,14 @@ h3 {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  background: #FFFFFF;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  background: #1A1A1A;
 }
 
 .product-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12) !important;
-  border-color: rgba(139, 92, 246, 0.3);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(255, 215, 0, 0.2) !important;
+  border-color: rgba(255, 215, 0, 0.4);
 }
 
 .product-card .MuiCardMedia-root {
@@ -140,7 +140,7 @@ h3 {
   font-size: 2rem;
   letter-spacing: -0.02em;
   line-height: 1.2;
-  background: linear-gradient(135deg, #2D3748 0%, #4A5568 100%);
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -151,29 +151,29 @@ h3 {
   font-family: 'Inter', sans-serif;
   font-weight: 400;
   font-size: 1rem;
-  color: #718096;
+  color: #B0B0B0;
   line-height: 1.6;
   margin-bottom: 2rem;
 }
 
 /* Enhanced Buttons */
 .cta-button {
-  background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
   border: none;
   border-radius: 12px;
   padding: 12px 32px;
   font-weight: 600;
   font-size: 1rem;
-  color: white;
+  color: #0A0A0A;
   transition: all 0.3s ease;
   text-transform: none;
-  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
 }
 
 .cta-button:hover {
-  background: linear-gradient(135deg, #7C3AED 0%, #DB2777 100%);
+  background: linear-gradient(135deg, #FFED4A 0%, #FF8C00 100%);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
+  box-shadow: 0 8px 24px rgba(255, 215, 0, 0.4);
 }
 
 /* Enhanced Hero Section */
@@ -262,13 +262,19 @@ h3 {
 }
 
 .sale-badge {
-  background-color: #EF4444;
-  color: white;
+  background: linear-gradient(135deg, #FFD700, #F59E0B);
+  color: #000000;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+  border: 1px solid rgba(255, 215, 0, 0.5);
 }
 
 .featured-badge {
-  background-color: #F59E0B;
-  color: white;
+  background: linear-gradient(135deg, #000000, #1F2937);
+  color: #FFD700;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 1px solid #FFD700;
 }
 
 /* Admin Dashboard */
@@ -711,7 +717,7 @@ h3 {
 
 /* Loading States */
 .skeleton-shimmer {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, #fafafa 25%, rgba(255, 215, 0, 0.1) 50%, #fafafa 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
@@ -723,6 +729,87 @@ h3 {
   100% {
     background-position: 200% 0;
   }
+}
+
+/* Gold Spinner */
+.gold-spinner {
+  border: 3px solid rgba(255, 215, 0, 0.2);
+  border-top: 3px solid #FFD700;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Floating Cart Counter */
+.cart-counter {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background: linear-gradient(135deg, #FFD700, #F59E0B);
+  color: #000000;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(255, 215, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.cart-counter:hover {
+  transform: scale(1.1);
+  box-shadow: 0 12px 32px rgba(255, 215, 0, 0.4);
+}
+
+/* Gold Divider */
+.gold-divider {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #FFD700, transparent);
+  margin: 48px 0;
+  border-radius: 1px;
+}
+
+/* Luxury Transitions */
+.luxury-transition {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hero Background Effects */
+.hero-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hero-particles::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: float 20s linear infinite;
+}
+
+@keyframes float {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  100% { transform: translate(-50px, -50px) rotate(360deg); }
 }
 
 /* Price Badge */

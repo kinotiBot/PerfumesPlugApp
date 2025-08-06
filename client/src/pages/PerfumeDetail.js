@@ -21,6 +21,9 @@ import {
   List,
   ListItem,
   ListItemText,
+  Alert,
+  Snackbar,
+  CircularProgress,
 } from '@mui/material';
 import {
   ShoppingCart,
@@ -70,11 +73,14 @@ const PerfumeDetail = () => {
 
   const { perfume, loading, error } = useSelector((state) => state.perfume);
   const { isAuthenticated } = useSelector((state) => state.auth);
+  const { loading: cartLoading, error: cartError, success: cartSuccess } = useSelector((state) => state.cart);
 
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
   const [tabValue, setTabValue] = useState(0);
   const [favorite, setFavorite] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -111,6 +117,26 @@ const PerfumeDetail = () => {
     } else {
       navigate('/login?redirect=perfumes/' + id);
     }
+  };
+
+  // Handle cart success/error feedback
+  useEffect(() => {
+    if (cartSuccess) {
+      setShowSuccess(true);
+      dispatch({ type: 'cart/resetCartSuccess' });
+    }
+    if (cartError) {
+      setShowError(true);
+    }
+  }, [cartSuccess, cartError, dispatch]);
+
+  const handleCloseSuccess = () => {
+    setShowSuccess(false);
+  };
+
+  const handleCloseError = () => {
+    setShowError(false);
+    dispatch({ type: 'cart/clearCartError' });
   };
 
   const handleTabChange = (event, newValue) => {
@@ -315,12 +341,12 @@ const PerfumeDetail = () => {
           <Button
             variant="contained"
             size="large"
-            startIcon={<ShoppingCart />}
+            startIcon={cartLoading ? <CircularProgress size={20} color="inherit" /> : <ShoppingCart />}
             onClick={handleAddToCart}
-            disabled={perfume.stock <= 0}
+            disabled={perfume.stock <= 0 || cartLoading}
             fullWidth
           >
-            {perfume.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
+            {cartLoading ? 'Adding...' : perfume.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
           </Button>
         </Grid>
       </Grid>
@@ -389,6 +415,30 @@ const PerfumeDetail = () => {
       </Paper>
 
       {/* Related Products section would go here */}
+      
+      {/* Success Snackbar */}
+      <Snackbar
+        open={showSuccess}
+        autoHideDuration={3000}
+        onClose={handleCloseSuccess}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseSuccess} severity="success" sx={{ width: '100%' }}>
+          Item added to cart successfully!
+        </Alert>
+      </Snackbar>
+
+      {/* Error Snackbar */}
+      <Snackbar
+        open={showError}
+        autoHideDuration={6000}
+        onClose={handleCloseError}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseError} severity="error" sx={{ width: '100%' }}>
+          {cartError || 'Failed to add item to cart'}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };

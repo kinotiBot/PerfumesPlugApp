@@ -42,9 +42,9 @@ import { getCart } from '../../features/cart/cartSlice';
 
 // Enhanced styled components
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
-  backgroundColor: '#FFFFFF',
-  boxShadow: '0 2px 12px rgba(0, 0, 0, 0.08)',
-  borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
+  backgroundColor: '#0A0A0A',
+  boxShadow: '0 2px 12px rgba(0, 0, 0, 0.3)',
+  borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
   backdropFilter: 'blur(8px)',
 }));
 
@@ -62,26 +62,84 @@ const LogoText = styled(Typography)(({ theme }) => ({
   fontFamily: '"Cormorant Garamond", serif',
   fontWeight: 600,
   fontSize: '1.75rem',
-  background: 'linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)',
+  background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
   backgroundClip: 'text',
   WebkitBackgroundClip: 'text',
   WebkitTextFillColor: 'transparent',
   letterSpacing: '-0.02em',
 }));
 
+const FloatingCartButton = styled(IconButton)(({ theme }) => ({
+  position: 'relative',
+  color: '#F8F8F8',
+  backgroundColor: '#1A1A1A',
+  border: '2px solid #FFD700',
+  borderRadius: '50%',
+  width: '56px',
+  height: '56px',
+  boxShadow: '0 4px 20px rgba(255, 215, 0, 0.3)',
+  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+  '&:hover': {
+    backgroundColor: '#FFD700',
+    color: '#1A1A1A',
+    transform: 'translateY(-2px) scale(1.05)',
+    boxShadow: '0 8px 30px rgba(255, 215, 0, 0.4)',
+    borderColor: '#FFA500',
+  },
+  '&:active': {
+    transform: 'translateY(0) scale(0.98)',
+  },
+}));
+
+const FloatingCartBadge = styled(Badge, {
+  shouldForwardProp: (prop) => prop !== 'animate',
+})(({ theme, animate }) => ({
+  '& .MuiBadge-badge': {
+    backgroundColor: '#FFD700',
+    color: '#1A1A1A',
+    fontWeight: 700,
+    fontSize: '0.75rem',
+    minWidth: '22px',
+    height: '22px',
+    borderRadius: '11px',
+    border: '2px solid #1A1A1A',
+    boxShadow: '0 2px 8px rgba(255, 215, 0, 0.4)',
+    animation: animate ? 'pulse 2s infinite' : 'none',
+    transform: 'scale(1)',
+    transformOrigin: 'center',
+    transition: 'all 0.3s ease',
+  },
+  '@keyframes pulse': {
+    '0%': {
+      transform: 'scale(1)',
+      boxShadow: '0 2px 8px rgba(255, 215, 0, 0.4)',
+    },
+    '50%': {
+      transform: 'scale(1.1)',
+      boxShadow: '0 4px 16px rgba(255, 215, 0, 0.6)',
+    },
+    '100%': {
+      transform: 'scale(1)',
+      boxShadow: '0 2px 8px rgba(255, 215, 0, 0.4)',
+    },
+  },
+}));
+
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: '12px',
-  backgroundColor: alpha('#F7FAFC', 0.8),
-  border: '1px solid rgba(0, 0, 0, 0.08)',
+  backgroundColor: alpha('#1A1A1A', 0.8),
+  border: '1px solid rgba(255, 255, 255, 0.1)',
+  transition: 'all 0.3s ease',
   '&:hover': {
-    backgroundColor: alpha('#F7FAFC', 1),
-    borderColor: theme.palette.primary.main,
+    backgroundColor: alpha('#1A1A1A', 1),
+    borderColor: '#FFD700',
+    boxShadow: '0 2px 8px rgba(255, 215, 0, 0.15)',
   },
   '&:focus-within': {
-    backgroundColor: '#FFFFFF',
-    borderColor: theme.palette.primary.main,
-    boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`,
+    backgroundColor: '#2A2A2A',
+    borderColor: '#FFD700',
+    boxShadow: '0 0 0 3px rgba(255, 215, 0, 0.2), 0 4px 12px rgba(255, 215, 0, 0.15)',
   },
   marginLeft: 0,
   width: '100%',
@@ -120,16 +178,21 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const NavButton = styled(Button)(({ theme }) => ({
-  color: theme.palette.text.primary,
+  color: '#F8F8F8',
   fontWeight: 500,
   fontSize: '0.95rem',
   padding: '8px 16px',
   borderRadius: '8px',
   textTransform: 'none',
-  transition: 'all 0.2s ease',
+  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
   '&:hover': {
-    backgroundColor: alpha(theme.palette.primary.main, 0.08),
-    color: theme.palette.primary.main,
+    backgroundColor: 'rgba(255, 215, 0, 0.1)',
+    color: '#FFD700',
+    transform: 'translateY(-1px)',
+    boxShadow: '0 4px 12px rgba(255, 215, 0, 0.2)',
+  },
+  '&:active': {
+    transform: 'translateY(0)',
   },
 }));
 
@@ -242,22 +305,16 @@ const Header = () => {
 
           {/* Right side actions */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            {/* Cart */}
-            <IconButton
+            {/* Floating Cart */}
+            <FloatingCartButton
               component={RouterLink}
               to="/cart"
-              sx={{ 
-                color: 'text.primary',
-                '&:hover': {
-                  backgroundColor: alpha(theme.palette.primary.main, 0.08),
-                  color: theme.palette.primary.main,
-                }
-              }}
+              aria-label="Shopping cart"
             >
-              <Badge badgeContent={cartItemsCount} color="primary">
-                <ShoppingCart />
-              </Badge>
-            </IconButton>
+              <FloatingCartBadge badgeContent={cartItemsCount} max={99} animate={cartItemsCount > 0}>
+                 <ShoppingCart sx={{ fontSize: '1.5rem' }} />
+               </FloatingCartBadge>
+            </FloatingCartButton>
 
             {/* User Menu */}
             {isAuthenticated ? (
@@ -311,10 +368,17 @@ const Header = () => {
                   variant="outlined"
                   size="small"
                   sx={{
-                    borderColor: 'primary.main',
-                    color: 'primary.main',
+                    borderColor: '#FFD700',
+                    color: '#FFD700',
+                    fontWeight: 600,
+                    borderRadius: '8px',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                     '&:hover': {
-                      backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                      backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                      borderColor: '#FFA500',
+                      color: '#FFA500',
+                      transform: 'translateY(-1px)',
+                      boxShadow: '0 4px 12px rgba(255, 215, 0, 0.3)',
                     }
                   }}
                 >
@@ -326,9 +390,16 @@ const Header = () => {
                   variant="contained"
                   size="small"
                   sx={{
-                    background: 'linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)',
+                    background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+                    color: '#1A1A1A',
+                    fontWeight: 700,
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 12px rgba(255, 215, 0, 0.3)',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                     '&:hover': {
-                      background: 'linear-gradient(135deg, #7C3AED 0%, #DB2777 100%)',
+                      background: 'linear-gradient(135deg, #FFA500 0%, #FF8C00 100%)',
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 6px 20px rgba(255, 215, 0, 0.4)',
                     }
                   }}
                 >
