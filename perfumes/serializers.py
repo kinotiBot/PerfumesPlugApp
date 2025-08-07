@@ -20,6 +20,7 @@ class PerfumeSerializer(serializers.ModelSerializer):
     brand_name = serializers.CharField(source='brand.name', read_only=True)
     category_name = serializers.CharField(source='category.name', read_only=True)
     images = PerfumeImageSerializer(many=True, read_only=True)
+    slug = serializers.SlugField(read_only=True)  # Make slug read-only since it's auto-generated
     
     class Meta:
         model = Perfume

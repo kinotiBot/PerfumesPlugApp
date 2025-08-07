@@ -62,14 +62,14 @@ const Products = () => {
   const [selectedImages, setSelectedImages] = useState([]);
   const [uploading, setUploading] = useState(false);
   
-  // Form state for controlled components - using strings for number inputs to handle placeholders properly
+  // Form state for controlled components
   const [formData, setFormData] = useState({
     name: '',
     brand: '',
     category: '',
-    stock: '',
-    price: '',
-    regular_price: '',
+    stock: 0,
+    price: 0,
+    regular_price: 0,
     description: '',
     featured: false,
     on_sale: false
@@ -109,9 +109,9 @@ const Products = () => {
         name: product?.name || '',
         brand: product?.brand?.id || '',
         category: product?.category?.id || '',
-        stock: product?.stock?.toString() || '',
-        price: product?.price?.toString() || '',
-        regular_price: product?.regular_price?.toString() || '',
+        stock: product?.stock || 0,
+        price: product?.price || 0,
+        regular_price: product?.regular_price || 0,
         description: product?.description || '',
         featured: product?.featured || false,
         on_sale: product?.on_sale || false
@@ -121,9 +121,9 @@ const Products = () => {
         name: '',
         brand: '',
         category: '',
-        stock: '',
-        price: '',
-        regular_price: '',
+        stock: 0,
+        price: 0,
+        regular_price: 0,
         description: '',
         featured: false,
         on_sale: false
@@ -148,17 +148,11 @@ const Products = () => {
   };
 
   const handleRemoveImage = (index) => {
-    setSelectedImages(prev => {
-      // Clean up the preview URL to prevent memory leaks
-      const imageToRemove = prev[index];
-      if (imageToRemove?.preview) {
-        URL.revokeObjectURL(imageToRemove.preview);
-      }
-      return prev.filter((_, i) => i !== index);
-    });
+    setSelectedImages(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleSaveProduct = async () => {
+    // Use form state instead of DOM selectors
     const { name, brand, category, stock, price, regular_price, description, featured, on_sale } = formData;
 
     // Enhanced validation for all required fields
@@ -171,110 +165,81 @@ const Products = () => {
       if (!description) missingFields.push('Description');
       
       alert(`Please fill in all required fields: ${missingFields.join(', ')}`);
+      setUploading(false);
       return;
     }
     
-    // Convert and validate numeric values
-    const stockValue = parseInt(stock) || 0;
-    const priceValue = parseFloat(price);
-    const regularPriceValue = parseFloat(regular_price) || 0;
+    // Ensure brand and category are valid integers
     const brandId = parseInt(brand);
     const categoryId = parseInt(category);
     
-    if (isNaN(priceValue) || priceValue <= 0) {
-      alert('Please enter a valid price');
-      return;
-    }
-    
     if (isNaN(brandId) || isNaN(categoryId)) {
       alert('Please select valid Brand and Category');
-      return;
-    }
-
-    if (stockValue < 0) {
-      alert('Stock cannot be negative');
+      setUploading(false);
       return;
     }
 
     setUploading(true);
-    
     try {
-      // Always use FormData when we have images or when creating a new product
-      const formDataToSend = new FormData();
+      // Don't generate slug manually - let the backend handle it
+      // The Django model's save method will generate the slug from brand and name
       
-      // Append all product data
-      formDataToSend.append('name', name);
-      formDataToSend.append('description', description);
-      formDataToSend.append('price', priceValue.toString());
+      // Prepare the validated data for both FormData and JSON requests
+      const validatedData = {
+        name,
+        description,
+        price,
+        discount_price: on_sale ? regular_price : null,
+        stock,
+        brand: brandId,
+        category: categoryId,
+        gender: 'U', // 'U' for Unisex as per model choices
+        is_featured: featured,
+        is_active: true
+      };
       
-      if (on_sale && regularPriceValue > 0) {
-        formDataToSend.append('discount_price', regularPriceValue.toString());
-      }
-      
-      formDataToSend.append('stock', stockValue.toString());
-      formDataToSend.append('brand', brandId.toString());
-      formDataToSend.append('category', categoryId.toString());
-      formDataToSend.append('gender', 'U'); // 'U' for Unisex as per model choices
-      formDataToSend.append('is_featured', featured ? 'Yes' : 'No');
-      formDataToSend.append('is_active', 'true');
-      
-      // Important: Don't send the slug field - let the backend generate it
-      // The backend will create the slug from the name and brand
-      
-      // Handle image upload - this is critical for the validation
-      if (selectedImages.length > 0) {
-        // Use the first image as the main product image
-        if (selectedImages[0].file) {
-          formDataToSend.append('image', selectedImages[0].file);
-        }
+      // Add a placeholder image if no images are selected
+      if (selectedImages.length === 0) {
+        // Create a FormData to include a placeholder image
+        const formDataWithImage = new FormData();
         
-        // Additional images can be handled separately if needed
-        selectedImages.forEach((image, index) => {
-          if (index > 0 && image.file) { // Skip the first image as it's already added as main image
-            formDataToSend.append('images', image.file);
-          }
+        // Properly append each field to FormData
+        formDataWithImage.append('name', validatedData.name);
+        formDataWithImage.append('description', validatedData.description);
+        formDataWithImage.append('price', validatedData.price.toString());
+        if (validatedData.discount_price) {
+          formDataWithImage.append('discount_price', validatedData.discount_price.toString());
+        }
+        formDataWithImage.append('stock', validatedData.stock.toString());
+        formDataWithImage.append('brand', validatedData.brand.toString());
+        formDataWithImage.append('category', validatedData.category.toString());
+        formDataWithImage.append('gender', validatedData.gender);
+        formDataWithImage.append('is_featured', validatedData.is_featured.toString());
+        formDataWithImage.append('is_active', validatedData.is_active.toString());
+        
+        // Create a simple placeholder image blob
+        const canvas = document.createElement('canvas');
+        canvas.width = 200;
+        canvas.height = 200;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#f0f0f0';
+        ctx.fillRect(0, 0, 200, 200);
+        ctx.fillStyle = '#666';
+        ctx.font = '16px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('No Image', 100, 100);
+        
+        canvas.toBlob((blob) => {
+          formDataWithImage.append('image', blob, 'placeholder.png');
+          
+          // Send request with FormData
+          sendProductRequest(formDataWithImage, true);
         });
-      } else {
-        // If no image is selected, we need to handle this case
-        // The backend requires an image, so we should alert the user
-        alert('Please select at least one image for the product');
-        setUploading(false);
         return;
       }
-      
-      // Debug logging
-      console.log('Sending FormData with entries:');
-      for (let [key, value] of formDataToSend.entries()) {
-        console.log(`${key}:`, value);
-      }
-      
-      const config = {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${userToken}`,
-        },
-      };
 
-      let response;
-      if (selectedProduct?.id) {
-        // For updates, you might need to use PATCH instead of PUT depending on your backend
-        response = await axios.put(getApiUrl(`/api/perfumes/${selectedProduct.slug}/`), formDataToSend, config);
-      } else {
-        response = await axios.post(getApiUrl('/api/perfumes/'), formDataToSend, config);
-      }
-
-      if (response.status === 200 || response.status === 201) {
-        // Clean up preview URLs
-        selectedImages.forEach(image => {
-          if (image.preview) {
-            URL.revokeObjectURL(image.preview);
-          }
-        });
-
-        dispatch(getAllPerfumes({ page: page + 1, limit: rowsPerPage, search: searchTerm, category: filterCategory, brand: filterBrand }));
-        handleCloseDialog();
-        alert('Product saved successfully!');
-      }
+      // Send regular JSON request
+      sendProductRequest(validatedData, false);
     } catch (error) {
       console.error('Error saving product:', error.response?.data || error.message);
       
@@ -293,6 +258,83 @@ const Products = () => {
       } else {
         alert('Error saving product: ' + (error.response?.data?.detail || error.message));
       }
+      setUploading(false);
+    }
+  };
+  
+  const sendProductRequest = async (data, isFormData) => {
+    try {
+      // Debug logging to see what data is being sent
+      console.log('Sending data:', data);
+      console.log('Is FormData:', isFormData);
+      if (isFormData) {
+        console.log('FormData entries:');
+        for (let [key, value] of data.entries()) {
+          console.log(`${key}:`, value);
+        }
+      }
+      
+      const config = {
+        headers: {
+          'Content-Type': isFormData ? 'multipart/form-data' : 'application/json',
+          Authorization: `Bearer ${userToken}`,
+        },
+      };
+
+      let response;
+      if (selectedProduct?.id) {
+        response = await axios.put(getApiUrl(`/api/perfumes/${selectedProduct.slug}/`), data, config);
+      } else {
+        response = await axios.post(getApiUrl('/api/perfumes/'), data, config);
+      }
+
+      if (response.status === 200 || response.status === 201) {
+        const savedProduct = response.data;
+        
+        // If there are selected images and we're not using FormData, upload them separately
+        if (selectedImages.length > 0 && !isFormData) {
+          const imageFormData = new FormData();
+          selectedImages.forEach((image) => {
+            if (image.file) {
+              imageFormData.append('images', image.file);
+            }
+          });
+
+          try {
+            await axios.post(getApiUrl(`/api/perfumes/${savedProduct.slug}/upload_images/`), imageFormData, {
+              headers: { 
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${userToken}`,
+              }
+            });
+          } catch (imageError) {
+            console.error('Error uploading images:', imageError);
+            
+            // Show detailed image upload errors
+            if (imageError.response?.data && typeof imageError.response.data === 'object') {
+              const errorMessages = [];
+              Object.keys(imageError.response.data).forEach(field => {
+                const fieldErrors = imageError.response.data[field];
+                if (Array.isArray(fieldErrors)) {
+                  errorMessages.push(`${field}: ${fieldErrors.join(', ')}`);
+                } else {
+                  errorMessages.push(`${field}: ${fieldErrors}`);
+                }
+              });
+              alert('Product saved but image upload failed:\n' + errorMessages.join('\n'));
+            } else {
+              alert('Product saved but there was an error uploading images.');
+            }
+          }
+        }
+
+        dispatch(getAllPerfumes({ page: page + 1, limit: rowsPerPage, search: searchTerm, category: filterCategory, brand: filterBrand }));
+        handleCloseDialog();
+        alert('Product saved successfully!');
+      }
+    } catch (error) {
+      console.error('Error saving product:', error.response?.data || error.message);
+      alert('Error saving product: ' + (error.response?.data?.detail || error.message));
     } finally {
       setUploading(false);
     }
@@ -303,11 +345,6 @@ const Products = () => {
       // Implement delete product functionality
       console.log('Delete product with ID:', id);
     }
-  };
-
-  // Helper function to handle number input changes
-  const handleNumberChange = (field, value) => {
-    setFormData({...formData, [field]: value});
   };
 
   return (
@@ -565,10 +602,10 @@ const Products = () => {
                 <TextField
                   fullWidth
                   label="Stock"
-                  placeholder="0"
+                  placeholder="Enter stock quantity"
                   type="number"
                   value={formData.stock}
-                  onChange={(e) => handleNumberChange('stock', e.target.value)}
+                  onChange={(e) => setFormData({...formData, stock: parseInt(e.target.value) || 0})}
                   InputProps={{ inputProps: { min: 0 } }}
                 />
               </Grid>
@@ -576,10 +613,10 @@ const Products = () => {
                 <TextField
                   fullWidth
                   label="Price"
-                  placeholder="0.00"
+                  placeholder="Enter price"
                   type="number"
                   value={formData.price}
-                  onChange={(e) => handleNumberChange('price', e.target.value)}
+                  onChange={(e) => setFormData({...formData, price: parseFloat(e.target.value) || 0})}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">$</InputAdornment>
@@ -592,10 +629,10 @@ const Products = () => {
                 <TextField
                   fullWidth
                   label="Regular Price"
-                  placeholder="0.00"
+                  placeholder="Enter regular price"
                   type="number"
                   value={formData.regular_price}
-                  onChange={(e) => handleNumberChange('regular_price', e.target.value)}
+                  onChange={(e) => setFormData({...formData, regular_price: parseFloat(e.target.value) || 0})}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">$</InputAdornment>

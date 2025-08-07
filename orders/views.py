@@ -1,6 +1,7 @@
-from rest_framework import viewsets, generics, permissions, status
+from rest_framework import viewsets, generics, permissions, status, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from .models import Order, OrderItem, Cart, CartItem
 from perfumes.models import Perfume
@@ -134,12 +135,21 @@ class CartViewSet(viewsets.GenericViewSet):
 class OrderViewSet(viewsets.ModelViewSet):
     serializer_class = OrderSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['status', 'payment_status']
+    search_fields = ['id', 'user__first_name', 'user__last_name', 'user__email']
+    ordering_fields = ['created_at', 'total_amount']
     
     def get_queryset(self):
         user = self.request.user
-        if user.is_staff:
-            return Order.objects.all()
-        return Order.objects.filter(user=user)
+        queryset = Order.objects.all() if user.is_staff else Order.objects.filter(user=user)
+        
+        # Handle order_id filter manually since it's searching by ID
+        order_id = self.request.query_params.get('order_id')
+        if order_id:
+            queryset = queryset.filter(id__icontains=order_id)
+            
+        return queryset.order_by('-created_at')
     
     def get_serializer_class(self):
         if self.action == 'create':
@@ -178,9 +188,11 @@ class OrderViewSet(viewsets.ModelViewSet):
         """
         Create an order for guest users (no authentication required)
         """
+        print(f"Guest order request data: {request.data}")
         serializer = GuestOrderCreateSerializer(data=request.data)
         if serializer.is_valid():
             order = serializer.save()
             response_serializer = OrderSerializer(order)
             return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+        print(f"Guest order validation errors: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

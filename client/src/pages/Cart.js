@@ -168,41 +168,49 @@ const Cart = () => {
                             component="img"
                             height="80"
                             image={
-                              item.perfume_details.images && item.perfume_details.images.length > 0
+                              (item.perfume_details?.images?.length > 0)
                                 ? getImageUrl(item.perfume_details.images[0].image)
-                                : getImageUrl(item.perfume_details.image)
+                                : (item.perfume?.images?.length > 0)
+                                ? getImageUrl(item.perfume.images[0].image)
+                                : (item.perfume_details?.image)
+                                ? getImageUrl(item.perfume_details.image)
+                                : (item.perfume?.image)
+                                ? getImageUrl(item.perfume.image)
+                                : '/images/placeholder.svg'
                             }
-                            alt={item.perfume_details.name}
+                            alt={(item.perfume_details?.name || item.perfume?.name) || 'Product'}
                             sx={{ objectFit: 'contain' }}
                           />
                         </Card>
                         <Box>
                           <Link
                             component={RouterLink}
-                            to={`/perfumes/${item.perfume_details.id}`}
+                            to={`/perfumes/${(item.perfume_details?.id || item.perfume?.id) || '#'}`}
                             underline="hover"
                             color="inherit"
                           >
                             <Typography variant="subtitle1" className="product-name">
-                              {item.perfume_details.name}
+                              {(item.perfume_details || item.perfume) ? (item.perfume_details?.name || item.perfume?.name) : 'Unknown Product'}
                             </Typography>
                           </Link>
                           <Typography variant="body2" color="textSecondary" className="brand-name" sx={{ fontSize: '0.9rem' }}>
-                            {item.perfume_details.brand ? item.perfume_details.brand.name : ''}
+                            {(item.perfume_details?.brand?.name || item.perfume?.brand?.name) || ''}
                           </Typography>
                         </Box>
                       </Box>
                     </TableCell>
                     <TableCell align="right">
-                      <Typography variant="body1" className="price-text">RWF {(item.perfume_details.discount_price || item.perfume_details.price).toLocaleString()}</Typography>
-                      {item.perfume_details.discount_price && (
+                      <Typography variant="body1" className="price-text">
+                        RWF {((item.perfume_details?.discount_price || item.perfume?.discount_price) || (item.perfume_details?.price || item.perfume?.price) || 0).toLocaleString()}
+                      </Typography>
+                      {((item.perfume_details?.discount_price || item.perfume?.discount_price)) && (
                         <Typography
                             variant="body2"
                             color="textSecondary"
                             className="price-text"
                             sx={{ textDecoration: 'line-through' }}
                           >
-                            RWF {item.perfume_details.price.toLocaleString()}
+                            RWF {(item.perfume_details?.price || item.perfume?.price || 0).toLocaleString()}
                           </Typography>
                       )}
                     </TableCell>
@@ -220,7 +228,7 @@ const Cart = () => {
                             handleQuantityChange(
                               item.id,
                               item.quantity,
-                              item.perfume_details.stock,
+                              (item.perfume_details?.stock || item.perfume?.stock) || 0,
                               item.quantity - 1
                             )
                           }
@@ -235,13 +243,13 @@ const Cart = () => {
                             handleQuantityChange(
                               item.id,
                               item.quantity,
-                              item.perfume_details.stock,
+                              item.perfume_details ? item.perfume_details.stock || 0 : 0,
                               parseInt(e.target.value) || 1
                             )
                           }
                           inputProps={{
                             min: 1,
-                            max: item.perfume_details.stock,
+                            max: (item.perfume_details?.stock || item.perfume?.stock) || 0,
                             type: 'number',
                             style: { textAlign: 'center' },
                           }}
@@ -253,11 +261,11 @@ const Cart = () => {
                             handleQuantityChange(
                               item.id,
                               item.quantity,
-                              item.perfume_details.stock,
+                              item.perfume_details ? item.perfume_details.stock || 0 : 0,
                               item.quantity + 1
                             )
                           }
-                          disabled={item.quantity >= item.perfume_details.stock}
+                          disabled={item.quantity >= ((item.perfume_details?.stock || item.perfume?.stock) || 0)}
                         >
                           <Add />
                         </IconButton>

@@ -110,6 +110,9 @@ const Orders = () => {
   };
 
   const getPaymentStatusColor = (status) => {
+    if (typeof status === 'boolean') {
+      return status ? 'success' : 'error';
+    }
     switch (status) {
       case 'paid':
         return 'success';
@@ -203,7 +206,7 @@ const Orders = () => {
                       {format(new Date(order.created_at), 'MMM dd, yyyy')}
                     </TableCell>
                     <TableCell>
-                      {order.user ? `${order.user.first_name} ${order.user.last_name}` : 'N/A'}
+                      {order.user ? `${order.user.first_name} ${order.user.last_name}` : (order.guest_name || 'N/A')}
                     </TableCell>
                     <TableCell align="right">${order.total_amount}</TableCell>
                     <TableCell align="center">
@@ -218,8 +221,8 @@ const Orders = () => {
                     </TableCell>
                     <TableCell align="center">
                       <Chip
-                        label={order.payment_status ? 
-                          order.payment_status.charAt(0).toUpperCase() + order.payment_status.slice(1) : 
+                        label={order.payment_status !== undefined ? 
+                          (order.payment_status ? 'Paid' : 'Unpaid') : 
                           'Unknown'
                         }
                         color={getPaymentStatusColor(order.payment_status)}
@@ -246,7 +249,7 @@ const Orders = () => {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={totalPages * rowsPerPage}
+            count={Math.max(0, (totalPages || 1) * rowsPerPage)}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -268,9 +271,12 @@ const Orders = () => {
                     <Typography>
                       {selectedOrder.user
                         ? `${selectedOrder.user.first_name} ${selectedOrder.user.last_name}`
-                        : 'N/A'}
+                        : (selectedOrder.guest_name || 'N/A')}
                     </Typography>
-                    <Typography>{selectedOrder.user?.email || 'N/A'}</Typography>
+                    <Typography>{selectedOrder.user?.email || selectedOrder.guest_email || 'N/A'}</Typography>
+                    {(selectedOrder.user?.phone || selectedOrder.guest_phone) && (
+                      <Typography>Phone: {selectedOrder.user?.phone || selectedOrder.guest_phone}</Typography>
+                    )}
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <Typography variant="subtitle1">Order Information</Typography>
@@ -282,7 +288,12 @@ const Orders = () => {
                   <Grid item xs={12}>
                     <Typography variant="subtitle1">Shipping Address</Typography>
                     <Typography>
-                      {selectedOrder.shipping_address?.street}, {selectedOrder.shipping_address?.city}, {selectedOrder.shipping_address?.state} {selectedOrder.shipping_address?.zip_code}, {selectedOrder.shipping_address?.country}
+                      {selectedOrder.shipping_address ? 
+                        `${selectedOrder.shipping_address?.street}, ${selectedOrder.shipping_address?.city}, ${selectedOrder.shipping_address?.state} ${selectedOrder.shipping_address?.zip_code}, ${selectedOrder.shipping_address?.country}` :
+                        (selectedOrder.guest_address ? 
+                          `${selectedOrder.guest_address}, ${selectedOrder.guest_city}, ${selectedOrder.guest_province}` : 
+                          'N/A')
+                      }
                     </Typography>
                   </Grid>
                   <Grid item xs={12}>
@@ -291,8 +302,8 @@ const Orders = () => {
                     <Typography>
                       Status: 
                       <Chip
-                        label={selectedOrder.payment_status ? 
-                          selectedOrder.payment_status.charAt(0).toUpperCase() + selectedOrder.payment_status.slice(1) : 
+                        label={selectedOrder.payment_status !== undefined ? 
+                          (selectedOrder.payment_status ? 'Paid' : 'Unpaid') : 
                           'Unknown'
                         }
                         color={getPaymentStatusColor(selectedOrder.payment_status)}

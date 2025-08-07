@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Order, OrderItem, Cart, CartItem
+from perfumes.models import Perfume
 from perfumes.serializers import PerfumeSerializer
 from users.serializers import AddressSerializer
 

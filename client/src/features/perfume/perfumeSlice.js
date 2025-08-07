@@ -31,7 +31,7 @@ export const getPerfumes = createAsyncThunk(
       if (featured) url += `&is_featured=${featured}`;
       if (on_sale) url += `&on_sale=${on_sale}`;
       
-      const { data } = await axios.get(url);
+      const { data } = await axios.get(getApiUrl(url));
       return data;
     } catch (error) {
       if (error.response && error.response.data.message) {
@@ -48,7 +48,7 @@ export const getPerfumeDetails = createAsyncThunk(
   'perfume/getPerfumeDetails',
   async (id, { rejectWithValue }) => {
     try {
-      const { data } = await axios.get(`/api/perfumes/${id}/`);
+      const { data } = await axios.get(getApiUrl(`/api/perfumes/${id}/`));
       return data;
     } catch (error) {
       if (error.response && error.response.data.message) {
@@ -99,7 +99,7 @@ export const getAllPerfumes = createAsyncThunk(
   'perfume/getAllPerfumes',
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await axios.get('/api/perfumes/');
+      const { data } = await axios.get(getApiUrl('/api/perfumes/'));
       return data;
     } catch (error) {
       if (error.response && error.response.data.message) {
@@ -116,7 +116,7 @@ export const getCategories = createAsyncThunk(
   'perfume/getCategories',
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await axios.get('/api/perfumes/categories/');
+      const { data } = await axios.get(getApiUrl('/api/perfumes/categories/'));
       return data;
     } catch (error) {
       if (error.response && error.response.data.message) {
@@ -133,7 +133,7 @@ export const getBrands = createAsyncThunk(
   'perfume/getBrands',
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await axios.get('/api/perfumes/brands/');
+      const { data } = await axios.get(getApiUrl('/api/perfumes/brands/'));
       return data;
     } catch (error) {
       if (error.response && error.response.data.message) {

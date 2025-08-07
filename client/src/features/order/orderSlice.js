@@ -9,6 +9,7 @@ const initialState = {
   loading: false,
   error: null,
   success: false,
+  totalPages: 1,
 };
 
 // Create order
@@ -314,6 +315,8 @@ const orderSlice = createSlice({
         state.loading = false;
         // Ensure orders is always an array
         state.orders = Array.isArray(payload) ? payload : (payload?.results || payload?.orders || []);
+        // Set totalPages from API response, default to 1 if not provided
+        state.totalPages = payload?.total_pages || Math.ceil((payload?.count || state.orders.length) / 10) || 1;
       })
       .addCase(getAllOrders.rejected, (state, { payload }) => {
         state.loading = false;

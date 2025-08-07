@@ -102,3 +102,54 @@ class PerfumeViewSet(viewsets.ModelViewSet):
         
         serializer = self.get_serializer(on_sale_perfumes, many=True)
         return Response(serializer.data)
+    
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAdminUser])
+    def upload_images(self, request, slug=None):
+        """Upload multiple images for a perfume"""
+        perfume = self.get_object()
+        images = request.FILES.getlist('images')
+        
+        if not images:
+            return Response(
+                {'error': 'No images provided'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        uploaded_images = []
+        for image in images:
+            perfume_image = PerfumeImage.objects.create(
+                perfume=perfume,
+                image=image
+            )
+            serializer = PerfumeImageSerializer(perfume_image)
+            uploaded_images.append(serializer.data)
+        
+        return Response({
+            'message': f'{len(uploaded_images)} images uploaded successfully',
+            'images': uploaded_images
+        }, status=status.HTTP_201_CREATED)
+    
+    @action(detail=True, methods=['delete'], permission_classes=[permissions.IsAdminUser])
+    def delete_image(self, request, slug=None):
+        """Delete a specific image from a perfume"""
+        perfume = self.get_object()
+        image_id = request.data.get('image_id')
+        
+        if not image_id:
+            return Response(
+                {'error': 'Image ID is required'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            image = PerfumeImage.objects.get(id=image_id, perfume=perfume)
+            image.delete()
+            return Response(
+                {'message': 'Image deleted successfully'}, 
+                status=status.HTTP_200_OK
+            )
+        except PerfumeImage.DoesNotExist:
+            return Response(
+                {'error': 'Image not found'}, 
+                status=status.HTTP_404_NOT_FOUND
+            )

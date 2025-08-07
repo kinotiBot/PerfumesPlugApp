@@ -129,17 +129,33 @@ const Checkout = () => {
       subtotal: subtotal.toFixed(2),
       tax: tax.toFixed(2),
       shipping: shipping.toFixed(2),
-      total: total.toFixed(2),
-      items: cartItems.map(item => ({
-        perfume_id: item.perfume.id,
-        quantity: item.quantity,
-        price: item.perfume.discount_price || item.perfume.price
-      }))
+      total: total.toFixed(2)
     };
     
-    // Add guest information if not authenticated
-    if (!isAuthenticated) {
-      orderData.guest_info = guestInfo;
+    if (isAuthenticated) {
+      // For authenticated users, use 'items' field
+      orderData.items = cartItems.map(item => ({
+        perfume_id: item.perfume ? item.perfume.id : (item.perfume_details ? item.perfume_details.id : null),
+        quantity: item.quantity,
+        price: item.perfume ? (item.perfume.discount_price || item.perfume.price) : (item.perfume_details ? (item.perfume_details.discount_price || item.perfume_details.price) : 0)
+      }));
+    } else {
+      // For guest users, use 'cart_items' field and individual guest fields
+      orderData.cart_items = cartItems.map(item => ({
+        perfume: {
+          id: item.perfume ? item.perfume.id : (item.perfume_details ? item.perfume_details.id : null)
+        },
+        quantity: item.quantity
+      }));
+      
+      // Add individual guest fields
+      orderData.guest_name = `${guestInfo.firstName || ''} ${guestInfo.lastName || ''}`.trim();
+      orderData.guest_email = guestInfo.email || '';
+      orderData.guest_phone = guestInfo.phone || '';
+      orderData.guest_address = guestInfo.address || '';
+      orderData.guest_city = guestInfo.city || '';
+      orderData.guest_province = guestInfo.province || '';
+      orderData.guest_notes = guestInfo.notes || '';
     }
     
     console.log('Order data:', orderData);
@@ -248,10 +264,10 @@ const Checkout = () => {
                       }}
                     >
                       <Typography variant="body1">
-                        {item.perfume_details.name} x {item.quantity}
+                        {item.perfume_details ? item.perfume_details.name : 'Unknown Product'} x {item.quantity}
                       </Typography>
                       <Typography variant="body1">
-                        RWF {item.total.toLocaleString()}
+                        RWF {item.total ? item.total.toLocaleString() : '0'}
                       </Typography>
                     </Box>
                   ))}

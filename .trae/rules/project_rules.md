@@ -1,0 +1,1 @@
+1. create tests for every feature and run the tests every time you make changes to the feature and any other code segment affected  by the test to make sure you do not break anything that was working before

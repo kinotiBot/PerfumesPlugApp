@@ -4,7 +4,7 @@ const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000';
 
 // Function to get full image URL
 export const getImageUrl = (imagePath) => {
-  if (!imagePath) return 'https://via.placeholder.com/200';
+  if (!imagePath) return '/images/placeholder.svg';
   
   // If it's already a full URL, return as is
   if (imagePath.startsWith('http')) {
