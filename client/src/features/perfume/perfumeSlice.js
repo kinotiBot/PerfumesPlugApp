@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { getApiUrl } from '../../utils/api';
 
 const initialState = {
   perfumes: [],
@@ -64,7 +65,7 @@ export const getFeaturedPerfumes = createAsyncThunk(
   'perfume/getFeaturedPerfumes',
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await axios.get('/api/perfumes/featured/');
+      const { data } = await axios.get(getApiUrl('/api/perfumes/featured/'));
       return data;
     } catch (error) {
       if (error.response && error.response.data.message) {
@@ -81,7 +82,7 @@ export const getOnSalePerfumes = createAsyncThunk(
   'perfume/getOnSalePerfumes',
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await axios.get('/api/perfumes/on_sale/');
+      const { data } = await axios.get(getApiUrl('/api/perfumes/on_sale/'));
       return data;
     } catch (error) {
       if (error.response && error.response.data.message) {

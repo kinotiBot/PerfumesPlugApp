@@ -19,10 +19,11 @@ import {
   Typography,
   CircularProgress,
 } from '@mui/material';
-import { getCart } from '../features/cart/cartSlice';
-import { createOrder, clearOrderError, resetOrderSuccess } from '../features/order/orderSlice';
+import { getCart, loadGuestCart } from '../features/cart/cartSlice';
+import { createOrder, createGuestOrder, clearOrderError, resetOrderSuccess } from '../features/order/orderSlice';
+import GuestCheckoutForm from '../components/checkout/GuestCheckoutForm';
 
-const steps = ['Payment Method', 'Review Order'];
+const steps = ['Contact Info', 'Payment Method', 'Review Order'];
 
 const Checkout = () => {
   const dispatch = useDispatch();
@@ -30,22 +31,34 @@ const Checkout = () => {
   
   const [activeStep, setActiveStep] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState('mobile_money');
+  const [guestInfo, setGuestInfo] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    address: '',
+    city: '',
+    province: '',
+    notes: ''
+  });
   
-  const { cartItems, cartTotal, loading: cartLoading } = useSelector((state) => state.cart);
+  const { cartItems, cartTotal, loading: cartLoading, isGuestCart } = useSelector((state) => state.cart);
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const { loading: orderLoading, success: orderSuccess, error: orderError } = useSelector((state) => state.order);
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/login?redirect=checkout');
-      return;
-    }
-    
     // Clear any previous order state when entering checkout
     dispatch(clearOrderError());
     dispatch(resetOrderSuccess());
-    dispatch(getCart());
-  }, [dispatch, isAuthenticated, navigate]);
+    
+    if (isAuthenticated) {
+      // Load authenticated user's cart
+      dispatch(getCart());
+    } else {
+      // Load guest cart from localStorage
+      dispatch(loadGuestCart());
+    }
+  }, [dispatch, isAuthenticated]);
 
   useEffect(() => {
     if (orderSuccess) {
@@ -86,11 +99,24 @@ const Checkout = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
+  const validateGuestInfo = () => {
+    if (isAuthenticated) return true;
+    
+    const required = ['firstName', 'lastName', 'email', 'phone', 'address', 'city'];
+    return required.every(field => guestInfo[field] && guestInfo[field].trim());
+  };
+
   const handlePlaceOrder = () => {
     console.log('handlePlaceOrder called');
     console.log('cartItems:', cartItems);
     console.log('cartTotal:', cartTotal);
     console.log('paymentMethod:', paymentMethod);
+    
+    // Validate guest info if not authenticated
+    if (!isAuthenticated && !validateGuestInfo()) {
+      toast.error('Please fill in all required contact information');
+      return;
+    }
     
     // Calculate order totals - ensure cartTotal is a number
     const subtotal = Number(cartTotal) || 0;
@@ -104,12 +130,27 @@ const Checkout = () => {
       tax: tax.toFixed(2),
       shipping: shipping.toFixed(2),
       total: total.toFixed(2),
+      items: cartItems.map(item => ({
+        perfume_id: item.perfume.id,
+        quantity: item.quantity,
+        price: item.perfume.discount_price || item.perfume.price
+      }))
     };
     
-    console.log('Order data:', orderData);
-    console.log('Dispatching createOrder...');
+    // Add guest information if not authenticated
+    if (!isAuthenticated) {
+      orderData.guest_info = guestInfo;
+    }
     
-    dispatch(createOrder(orderData));
+    console.log('Order data:', orderData);
+    
+    if (isAuthenticated) {
+      console.log('Dispatching createOrder...');
+      dispatch(createOrder(orderData));
+    } else {
+      console.log('Dispatching createGuestOrder...');
+      dispatch(createGuestOrder(orderData));
+    }
   };
 
 
@@ -117,6 +158,34 @@ const Checkout = () => {
   const getStepContent = (step) => {
     switch (step) {
       case 0:
+        // Contact Info step
+        if (isAuthenticated) {
+          // Skip contact info for authenticated users
+          return (
+            <Box>
+              <Typography variant="h6" gutterBottom>
+                Contact Information
+              </Typography>
+              <Paper sx={{ p: 2, bgcolor: '#f8f9fa' }}>
+                <Typography variant="subtitle1" gutterBottom>
+                  Logged in as: {user?.email}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Your order will be associated with your account.
+                </Typography>
+              </Paper>
+            </Box>
+          );
+        } else {
+          // Show guest checkout form
+          return (
+            <GuestCheckoutForm 
+              guestInfo={guestInfo}
+              onGuestInfoChange={setGuestInfo}
+            />
+          );
+        }
+      case 1:
         return (
           <Box>
             <Typography variant="h6" gutterBottom>
@@ -157,7 +226,7 @@ const Checkout = () => {
 
           </Box>
         );
-      case 1:
+      case 2:
         return (
           <Box>
             <Typography variant="h6" gutterBottom>

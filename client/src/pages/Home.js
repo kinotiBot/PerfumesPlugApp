@@ -26,7 +26,7 @@ import {
   getFeaturedPerfumes,
   getOnSalePerfumes,
 } from '../features/perfume/perfumeSlice';
-import { addToCart } from '../features/cart/cartSlice';
+import { addToCart, addToGuestCartAction } from '../features/cart/cartSlice';
 import { getImageUrl } from '../utils/api';
 import { LocalShipping, VerifiedUser, SupportAgent, Security, ShoppingCart } from '@mui/icons-material';
 import AdminWelcome from '../components/admin/AdminWelcome';
@@ -43,12 +43,11 @@ const Home = () => {
     dispatch(getOnSalePerfumes());
   }, [dispatch]);
 
-  const handleAddToCart = (perfumeId) => {
+  const handleAddToCart = (perfume) => {
     if (isAuthenticated) {
-      dispatch(addToCart({ perfumeId, quantity: 1 }));
+      dispatch(addToCart({ perfumeId: perfume.id, quantity: 1 }));
     } else {
-      // Redirect to login or show login modal
-      window.location.href = '/login';
+      dispatch(addToGuestCartAction({ perfume, quantity: 1 }));
     }
   };
 
@@ -194,7 +193,7 @@ const Home = () => {
           size="large"
           variant="contained"
           startIcon={<ShoppingCart />}
-          onClick={() => handleAddToCart(perfume.id)}
+          onClick={() => handleAddToCart(perfume)}
           fullWidth
           sx={{
             backgroundColor: '#1A1A1A',
@@ -248,7 +247,7 @@ const Home = () => {
           backgroundSize: 'cover',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',
-          backgroundImage: 'url(https://source.unsplash.com/random?perfume)',
+          background: 'linear-gradient(135deg, #1A1A1A 0%, #2D2D2D 50%, #1A1A1A 100%)',
           borderRadius: 3,
           overflow: 'hidden',
           minHeight: 500,

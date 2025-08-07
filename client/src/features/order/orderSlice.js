@@ -60,6 +60,40 @@ export const createOrder = createAsyncThunk(
   }
 );
 
+// Create guest order
+export const createGuestOrder = createAsyncThunk(
+  'order/createGuestOrder',
+  async (orderData, { dispatch, rejectWithValue }) => {
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+      const { data } = await axios.post(getApiUrl('/api/orders/guest/'), orderData, config);
+      
+      // Clear guest cart after successful order
+      const { clearGuestCartAction } = await import('../cart/cartSlice');
+      dispatch(clearGuestCartAction());
+      
+      return data;
+    } catch (error) {
+      console.error('Guest order creation error:', error);
+      
+      if (error.response && error.response.data) {
+        // Handle different error response formats
+        const errorMessage = error.response.data.message || 
+                           error.response.data.detail || 
+                           JSON.stringify(error.response.data) || 
+                           'Order creation failed';
+        return rejectWithValue(errorMessage);
+      } else {
+        return rejectWithValue(error.message || 'Network error occurred');
+      }
+    }
+  }
+);
+
 // Get user orders
 export const getUserOrders = createAsyncThunk(
   'order/getUserOrders',
@@ -217,6 +251,19 @@ const orderSlice = createSlice({
         state.order = payload;
       })
       .addCase(createOrder.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload;
+      })
+      // Create guest order
+      .addCase(createGuestOrder.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(createGuestOrder.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.success = true;
+        state.order = payload;
+      })
+      .addCase(createGuestOrder.rejected, (state, { payload }) => {
         state.loading = false;
         state.error = payload;
       })

@@ -28,22 +28,27 @@ import {
   updateCartItem,
   removeFromCart,
   clearCart,
+  loadGuestCart,
+  updateGuestCartItemAction,
+  removeFromGuestCartAction,
+  clearGuestCartAction,
 } from '../features/cart/cartSlice';
 import { getImageUrl } from '../utils/api';
 
 const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { cartItems, cartTotal, loading, error } = useSelector((state) => state.cart);
+  const { cartItems, cartTotal, loading, error, isGuestCart } = useSelector((state) => state.cart);
   const { isAuthenticated } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (isAuthenticated) {
       dispatch(getCart());
     } else {
-      navigate('/login?redirect=cart');
+      // Load guest cart from localStorage
+      dispatch(loadGuestCart());
     }
-  }, [dispatch, isAuthenticated, navigate]);
+  }, [dispatch, isAuthenticated]);
 
   const handleQuantityChange = (itemId, currentQuantity, stock, newQuantity) => {
     if (newQuantity < 1) {
@@ -56,16 +61,28 @@ const Cart = () => {
     }
 
     if (newQuantity !== currentQuantity) {
-      dispatch(updateCartItem({ itemId, quantity: newQuantity }));
+      if (isAuthenticated) {
+        dispatch(updateCartItem({ itemId, quantity: newQuantity }));
+      } else {
+        dispatch(updateGuestCartItemAction({ itemId, quantity: newQuantity }));
+      }
     }
   };
 
   const handleRemoveItem = (itemId) => {
-    dispatch(removeFromCart(itemId));
+    if (isAuthenticated) {
+      dispatch(removeFromCart(itemId));
+    } else {
+      dispatch(removeFromGuestCartAction(itemId));
+    }
   };
 
   const handleClearCart = () => {
-    dispatch(clearCart());
+    if (isAuthenticated) {
+      dispatch(clearCart());
+    } else {
+      dispatch(clearGuestCartAction());
+    }
   };
 
   const handleCheckout = () => {

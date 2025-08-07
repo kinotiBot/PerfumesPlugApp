@@ -1,6 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { getApiUrl } from '../../utils/api';
+import {
+  getGuestCart,
+  addToGuestCart,
+  updateGuestCartItem,
+  removeFromGuestCart,
+  clearGuestCart
+} from '../../utils/guestCart';
 
 const initialState = {
   cartItems: [],
@@ -9,6 +16,7 @@ const initialState = {
   success: false,
   cartTotal: 0,
   cartCount: 0,
+  isGuestCart: false,
 };
 
 // Get cart
@@ -146,6 +154,53 @@ const cartSlice = createSlice({
     resetCartSuccess: (state) => {
       state.success = false;
     },
+    // Guest cart actions
+    loadGuestCart: (state) => {
+      const guestCart = getGuestCart();
+      state.cartItems = guestCart.items || [];
+      state.cartTotal = Number(guestCart.subtotal) || 0;
+      state.cartCount = guestCart.total_items || 0;
+      state.isGuestCart = true;
+      state.loading = false;
+    },
+    addToGuestCartAction: (state, { payload }) => {
+      const { perfume, quantity } = payload;
+      const updatedCart = addToGuestCart(perfume, quantity);
+      state.cartItems = updatedCart.items || [];
+      state.cartTotal = Number(updatedCart.subtotal) || 0;
+      state.cartCount = updatedCart.total_items || 0;
+      state.isGuestCart = true;
+      state.success = true;
+      state.loading = false;
+    },
+    updateGuestCartItemAction: (state, { payload }) => {
+      const { itemId, quantity } = payload;
+      const updatedCart = updateGuestCartItem(itemId, quantity);
+      state.cartItems = updatedCart.items || [];
+      state.cartTotal = Number(updatedCart.subtotal) || 0;
+      state.cartCount = updatedCart.total_items || 0;
+      state.isGuestCart = true;
+      state.success = true;
+      state.loading = false;
+    },
+    removeFromGuestCartAction: (state, { payload }) => {
+      const updatedCart = removeFromGuestCart(payload);
+      state.cartItems = updatedCart.items || [];
+      state.cartTotal = Number(updatedCart.subtotal) || 0;
+      state.cartCount = updatedCart.total_items || 0;
+      state.isGuestCart = true;
+      state.success = true;
+      state.loading = false;
+    },
+    clearGuestCartAction: (state) => {
+      clearGuestCart();
+      state.cartItems = [];
+      state.cartTotal = 0;
+      state.cartCount = 0;
+      state.isGuestCart = true;
+      state.success = true;
+      state.loading = false;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -231,5 +286,13 @@ const cartSlice = createSlice({
   },
 });
 
-export const { clearCartError, resetCartSuccess } = cartSlice.actions;
+export const { 
+  clearCartError, 
+  resetCartSuccess,
+  loadGuestCart,
+  addToGuestCartAction,
+  updateGuestCartItemAction,
+  removeFromGuestCartAction,
+  clearGuestCartAction
+} = cartSlice.actions;
 export default cartSlice.reducer;

@@ -30,7 +30,7 @@ import AdminRoute from './components/routes/AdminRoute';
 
 // Actions
 import { checkAuth } from './features/auth/authSlice';
-import { getCart } from './features/cart/cartSlice';
+import { getCart, loadGuestCart } from './features/cart/cartSlice';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -42,9 +42,11 @@ const App = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    // Get cart if user is authenticated
+    // Get cart if user is authenticated, otherwise load guest cart
     if (isAuthenticated) {
       dispatch(getCart());
+    } else {
+      dispatch(loadGuestCart());
     }
   }, [dispatch, isAuthenticated]);
 
@@ -62,12 +64,10 @@ const App = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
 
+          {/* Checkout Route - Allow both authenticated and guest users */}
+          <Route path="/checkout" element={<CheckoutPage />} />
+
           {/* Protected Routes */}
-          <Route path="/checkout" element={
-            <PrivateRoute>
-              <CheckoutPage />
-            </PrivateRoute>
-          } />
           <Route path="/orders" element={
             <PrivateRoute>
               <OrdersPage />

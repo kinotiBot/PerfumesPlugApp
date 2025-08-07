@@ -88,3 +88,78 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         cart.items.all().delete()
         
         return order
+
+
+class GuestOrderCreateSerializer(serializers.ModelSerializer):
+    # Guest contact information
+    guest_name = serializers.CharField(max_length=100)
+    guest_email = serializers.EmailField()
+    guest_phone = serializers.CharField(max_length=20)
+    guest_address = serializers.CharField(max_length=255)
+    guest_city = serializers.CharField(max_length=100)
+    guest_province = serializers.CharField(max_length=100)
+    guest_notes = serializers.CharField(max_length=500, required=False, allow_blank=True)
+    
+    # Cart items data
+    cart_items = serializers.ListField(
+        child=serializers.DictField(),
+        write_only=True
+    )
+    
+    class Meta:
+        model = Order
+        fields = [
+            'payment_method', 'subtotal', 'tax', 'shipping', 'total',
+            'guest_name', 'guest_email', 'guest_phone', 'guest_address',
+            'guest_city', 'guest_province', 'guest_notes', 'cart_items'
+        ]
+    
+    def create(self, validated_data):
+        # Extract guest info and cart items
+        guest_info = {
+            'guest_name': validated_data.pop('guest_name'),
+            'guest_email': validated_data.pop('guest_email'),
+            'guest_phone': validated_data.pop('guest_phone'),
+            'guest_address': validated_data.pop('guest_address'),
+            'guest_city': validated_data.pop('guest_city'),
+            'guest_province': validated_data.pop('guest_province'),
+            'guest_notes': validated_data.pop('guest_notes', ''),
+        }
+        cart_items_data = validated_data.pop('cart_items')
+        
+        if not cart_items_data:
+            raise serializers.ValidationError({"cart_items": "Cart is empty"})
+        
+        # Create order without user
+        order = Order.objects.create(
+            user=None,
+            **validated_data,
+            **guest_info
+        )
+        
+        # Create order items from cart items data
+        for item_data in cart_items_data:
+            perfume_id = item_data.get('perfume', {}).get('id')
+            quantity = item_data.get('quantity', 1)
+            
+            try:
+                perfume = Perfume.objects.get(id=perfume_id)
+            except Perfume.DoesNotExist:
+                raise serializers.ValidationError({"cart_items": f"Perfume with id {perfume_id} not found"})
+            
+            if perfume.stock < quantity:
+                raise serializers.ValidationError({"cart_items": f"Insufficient stock for {perfume.name}"})
+            
+            price = perfume.discount_price or perfume.price
+            OrderItem.objects.create(
+                order=order,
+                perfume=perfume,
+                price=price,
+                quantity=quantity
+            )
+            
+            # Update perfume stock
+            perfume.stock -= quantity
+            perfume.save()
+        
+        return order

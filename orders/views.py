@@ -6,7 +6,7 @@ from .models import Order, OrderItem, Cart, CartItem
 from perfumes.models import Perfume
 from .serializers import (
     OrderSerializer, OrderItemSerializer, CartSerializer,
-    CartItemSerializer, OrderCreateSerializer
+    CartItemSerializer, OrderCreateSerializer, GuestOrderCreateSerializer
 )
 
 class CartViewSet(viewsets.GenericViewSet):
@@ -172,3 +172,15 @@ class OrderViewSet(viewsets.ModelViewSet):
         
         serializer = self.get_serializer(order)
         return Response(serializer.data)
+    
+    @action(detail=False, methods=['post'], permission_classes=[])
+    def guest(self, request):
+        """
+        Create an order for guest users (no authentication required)
+        """
+        serializer = GuestOrderCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            order = serializer.save()
+            response_serializer = OrderSerializer(order)
+            return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

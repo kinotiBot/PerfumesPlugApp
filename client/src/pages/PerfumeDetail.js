@@ -37,7 +37,7 @@ import {
   getPerfumeDetails,
   clearPerfumeDetails,
 } from '../features/perfume/perfumeSlice';
-import { addToCart } from '../features/cart/cartSlice';
+import { addToCart, addToGuestCartAction } from '../features/cart/cartSlice';
 import { getImageUrl } from '../utils/api';
 
 // Remove the unused StyledRating variable:
@@ -115,7 +115,8 @@ const PerfumeDetail = () => {
     if (isAuthenticated) {
       dispatch(addToCart({ perfumeId: perfume.id, quantity }));
     } else {
-      navigate('/login?redirect=perfumes/' + id);
+      // Add to guest cart
+      dispatch(addToGuestCartAction({ perfume, quantity }));
     }
   };
 

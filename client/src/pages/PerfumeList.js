@@ -44,7 +44,7 @@ import {
   getCategories,
   getBrands,
 } from '../features/perfume/perfumeSlice';
-import { addToCart } from '../features/cart/cartSlice';
+import { addToCart, addToGuestCartAction } from '../features/cart/cartSlice';
 import { getImageUrl } from '../utils/api';
 
 const PerfumeList = () => {
@@ -133,11 +133,12 @@ const PerfumeList = () => {
     navigate,
   ]);
 
-  const handleAddToCart = (perfumeId) => {
+  const handleAddToCart = (perfume) => {
     if (isAuthenticated) {
-      dispatch(addToCart({ perfumeId, quantity: 1 }));
+      dispatch(addToCart({ perfumeId: perfume.id, quantity: 1 }));
     } else {
-      navigate('/login?redirect=perfumes');
+      // Add to guest cart
+      dispatch(addToGuestCartAction({ perfume, quantity: 1 }));
     }
   };
 
@@ -374,7 +375,7 @@ const PerfumeList = () => {
             size="small"
             variant="contained"
             startIcon={<ShoppingCart />}
-            onClick={() => handleAddToCart(perfume.id)}
+            onClick={() => handleAddToCart(perfume)}
             fullWidth
           >
             Add to Cart

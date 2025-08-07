@@ -20,7 +20,7 @@ class Order(models.Model):
         ('cash_on_delivery', 'Cash On Delivery'),
     )
     
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders', null=True, blank=True)
     order_number = models.CharField(max_length=20, unique=True)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='P')
     payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES)
@@ -37,6 +37,16 @@ class Order(models.Model):
     tax = models.DecimalField(max_digits=10, decimal_places=2)
     shipping = models.DecimalField(max_digits=10, decimal_places=2)
     total = models.DecimalField(max_digits=10, decimal_places=2)
+    
+    # Guest information fields
+    guest_name = models.CharField(max_length=100, null=True, blank=True)
+    guest_email = models.EmailField(null=True, blank=True)
+    guest_phone = models.CharField(max_length=20, null=True, blank=True)
+    guest_address = models.CharField(max_length=255, null=True, blank=True)
+    guest_city = models.CharField(max_length=100, null=True, blank=True)
+    guest_province = models.CharField(max_length=100, null=True, blank=True)
+    guest_notes = models.TextField(max_length=500, null=True, blank=True)
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
