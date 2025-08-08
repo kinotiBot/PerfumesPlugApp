@@ -1,0 +1,6 @@
+<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg">
+  <rect width="60" height="60" fill="#f0f0f0" stroke="#ddd" stroke-width="1"/>
+  <text x="30" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#999">No Image</text>
+  <text x="30" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#999">Available</text>
+  <circle cx="30" cy="45" r="3" fill="#ccc"/>
+</svg>

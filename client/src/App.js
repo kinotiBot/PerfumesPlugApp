@@ -6,6 +6,8 @@ import { Container } from '@mui/material';
 // Components
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
+import PWAInstallPrompt from './components/PWAInstallPrompt';
+
 
 // Pages
 import HomePage from './pages/Home';
@@ -53,6 +55,7 @@ const App = () => {
   return (
     <>
       <Header />
+      <PWAInstallPrompt />
       <Container sx={{ minHeight: 'calc(100vh - 140px)', py: 4 }}>
         <Routes>
           {/* Public Routes */}
@@ -135,6 +138,7 @@ const App = () => {
               <SuperuserPanel />
             </AdminRoute>
           } />
+
         </Routes>
       </Container>
       <Footer />

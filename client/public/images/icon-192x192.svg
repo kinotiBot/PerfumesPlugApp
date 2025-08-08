@@ -1,0 +1,25 @@
+<svg width="192" height="192" viewBox="0 0 192 192" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="192" height="192" rx="24" fill="#000000"/>
+  <g transform="translate(32, 32)">
+    <!-- Perfume bottle shape -->
+    <path d="M64 20 L64 32 L56 32 L56 40 L48 40 L48 120 L80 120 L80 40 L72 40 L72 32 L64 32 L64 20 Z" fill="#ffffff" stroke="#ffffff" stroke-width="2"/>
+    
+    <!-- Bottle cap -->
+    <rect x="60" y="16" width="8" height="8" rx="2" fill="#ffffff"/>
+    
+    <!-- Perfume liquid -->
+    <rect x="52" y="44" width="24" height="72" rx="2" fill="#FFD700" opacity="0.8"/>
+    
+    <!-- Spray nozzle -->
+    <circle cx="64" cy="12" r="3" fill="#ffffff"/>
+    <rect x="62" y="8" width="4" height="8" fill="#ffffff"/>
+    
+    <!-- Label -->
+    <rect x="54" y="60" width="20" height="12" rx="1" fill="#000000" opacity="0.3"/>
+    <text x="64" y="68" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="6" font-weight="bold">PP</text>
+    
+    <!-- Decorative elements -->
+    <circle cx="64" cy="90" r="2" fill="#ffffff" opacity="0.5"/>
+    <circle cx="64" cy="100" r="1.5" fill="#ffffff" opacity="0.3"/>
+  </g>
+</svg>

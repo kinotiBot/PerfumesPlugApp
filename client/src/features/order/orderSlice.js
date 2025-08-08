@@ -217,14 +217,16 @@ export const updateOrderStatus = createAsyncThunk(
           Authorization: `Bearer ${auth.userToken}`,
         },
       };
-      const { data } = await axios.put(
-        getApiUrl(`/api/orders/${orderId}/`),
+      const { data } = await axios.post(
+        getApiUrl(`/api/orders/${orderId}/update_order_status/`),
         { status },
         config
       );
       return data;
     } catch (error) {
-      if (error.response && error.response.data.message) {
+      if (error.response && error.response.data.error) {
+        return rejectWithValue(error.response.data.error);
+      } else if (error.response && error.response.data.message) {
         return rejectWithValue(error.response.data.message);
       } else {
         return rejectWithValue(error.message);

@@ -1,0 +1,266 @@
+/* Mobile-first responsive styles for PWA */
+
+/* Base mobile styles */
+@media (max-width: 768px) {
+  /* Container adjustments */
+  .MuiContainer-root {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  /* Navigation adjustments */
+  .MuiAppBar-root {
+    position: sticky !important;
+  }
+
+  /* Product grid responsive */
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    padding: 8px;
+  }
+
+  /* Product cards */
+  .MuiCard-root {
+    margin-bottom: 12px;
+  }
+
+  .product-image {
+    height: 150px !important;
+    object-fit: cover;
+  }
+
+  /* Typography adjustments */
+  .MuiTypography-h4 {
+    font-size: 1.5rem !important;
+  }
+
+  .MuiTypography-h5 {
+    font-size: 1.25rem !important;
+  }
+
+  .MuiTypography-h6 {
+    font-size: 1.1rem !important;
+  }
+
+  /* Button adjustments */
+  .MuiButton-root {
+    min-height: 44px;
+    font-size: 0.9rem;
+  }
+
+  .MuiButton-sizeLarge {
+    padding: 12px 24px;
+    font-size: 1rem;
+  }
+
+  /* Form inputs */
+  .MuiTextField-root {
+    margin-bottom: 16px;
+  }
+
+  .MuiInputBase-input {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  /* Dialog adjustments */
+  .MuiDialog-paper {
+    margin: 8px;
+    width: calc(100% - 16px);
+    max-height: calc(100% - 16px);
+  }
+
+  /* Cart and checkout */
+  .cart-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cart-item-image {
+    width: 100%;
+    max-width: 120px;
+    margin-bottom: 8px;
+  }
+
+  /* Admin tables */
+  .MuiTableContainer-root {
+    overflow-x: auto;
+  }
+
+  .MuiTable-root {
+    min-width: 600px;
+  }
+
+  /* Floating action button for mobile */
+  .mobile-fab {
+    position: fixed !important;
+    bottom: 80px;
+    right: 16px;
+    z-index: 1000;
+  }
+
+  /* Bottom navigation for mobile */
+  .mobile-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 1px solid #e0e0e0;
+    padding: 8px 0;
+    z-index: 1000;
+  }
+
+  /* Safe area adjustments for iOS */
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .product-image {
+    height: 120px !important;
+  }
+
+  .MuiTypography-h4 {
+    font-size: 1.3rem !important;
+  }
+
+  .MuiButton-root {
+    font-size: 0.8rem;
+    padding: 8px 16px;
+  }
+
+  /* Stack form elements */
+  .checkout-form .MuiGrid-item {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (max-height: 500px) and (orientation: landscape) {
+  .MuiAppBar-root {
+    min-height: 48px;
+  }
+
+  .MuiToolbar-root {
+    min-height: 48px;
+  }
+
+  .product-image {
+    height: 100px !important;
+  }
+}
+
+/* Touch-friendly interactions */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Prevent text selection on touch */
+.no-select {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Hide scrollbars on mobile while keeping functionality */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+  }
+
+  * {
+    scrollbar-width: none;
+  }
+}
+
+/* PWA specific styles */
+@media (display-mode: standalone) {
+  /* Styles when app is installed as PWA */
+  .pwa-only {
+    display: block;
+  }
+
+  .browser-only {
+    display: none;
+  }
+
+  /* Adjust for status bar */
+  .MuiAppBar-root {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* Default browser styles */
+@media (display-mode: browser) {
+  .pwa-only {
+    display: none;
+  }
+
+  .browser-only {
+    display: block;
+  }
+}
+
+/* Loading states for better UX */
+.loading-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .MuiButton-outlined {
+    border-width: 2px;
+  }
+
+  .MuiCard-root {
+    border: 1px solid #000;
+  }
+}

@@ -258,9 +258,13 @@ const cartSlice = createSlice({
         state.cartItems = state.cartItems.filter(
           (item) => item.id !== payload
         );
-        state.cartCount = state.cartItems.length;
+        state.cartCount = state.cartItems.reduce((total, item) => total + item.quantity, 0);
         state.cartTotal = state.cartItems.reduce(
-          (acc, item) => acc + item.quantity * item.perfume.price,
+          (acc, item) => {
+            const price = (item.perfume_details?.discount_price || item.perfume?.discount_price) || 
+                         (item.perfume_details?.price || item.perfume?.price) || 0;
+            return acc + item.quantity * price;
+          },
           0
         );
       })

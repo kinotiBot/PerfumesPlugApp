@@ -185,6 +185,38 @@ class OrderViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
     
     @action(detail=True, methods=['post'])
+    def update_order_status(self, request, pk=None):
+        """Update the status of an order"""
+        order = self.get_object()
+        
+        # Get the new status from request data
+        new_status = request.data.get('status')
+        if not new_status:
+            return Response(
+                {'error': 'Status field is required'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Validate status choice
+        valid_statuses = [choice[0] for choice in Order.STATUS_CHOICES]
+        if new_status not in valid_statuses:
+            return Response(
+                {'error': f'Invalid status. Valid choices are: {", ".join(valid_statuses)}'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Update order status
+        order.status = new_status
+        order.save()
+        
+        return Response({
+            'message': f'Order status updated to {order.get_status_display()}',
+            'order_id': order.id,
+            'order_number': order.order_number,
+            'status': order.status
+        })
+    
+    @action(detail=True, methods=['post'])
     def update_payment_status(self, request, pk=None):
         """Update the payment status of an order"""
         order = self.get_object()

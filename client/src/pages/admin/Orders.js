@@ -76,6 +76,7 @@ const Orders = () => {
         status: event.target.value
       })).then(() => {
         handleCloseDialog();
+        // Refresh current page (page is 0-indexed, API expects 1-indexed)
         dispatch(getAllOrders({ 
           page: page + 1, 
           limit: rowsPerPage,
@@ -94,6 +95,7 @@ const Orders = () => {
         paymentStatus: paymentStatus
       })).then(() => {
         handleCloseDialog();
+        // Refresh current page (page is 0-indexed, API expects 1-indexed)
         dispatch(getAllOrders({ 
           page: page + 1, 
           limit: rowsPerPage,

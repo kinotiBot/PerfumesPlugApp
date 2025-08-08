@@ -243,7 +243,7 @@ const Cart = () => {
                             handleQuantityChange(
                               item.id,
                               item.quantity,
-                              item.perfume_details ? item.perfume_details.stock || 0 : 0,
+                              (item.perfume_details?.stock || item.perfume?.stock) || 0,
                               parseInt(e.target.value) || 1
                             )
                           }
@@ -261,7 +261,7 @@ const Cart = () => {
                             handleQuantityChange(
                               item.id,
                               item.quantity,
-                              item.perfume_details ? item.perfume_details.stock || 0 : 0,
+                              (item.perfume_details?.stock || item.perfume?.stock) || 0,
                               item.quantity + 1
                             )
                           }
@@ -273,7 +273,11 @@ const Cart = () => {
                     </TableCell>
                     <TableCell align="right">
                       <Typography variant="body1" fontWeight="bold" className="price-text">
-                        RWF {item.total.toLocaleString()}
+                        RWF {(
+                          item.total || 
+                          (item.quantity * ((item.perfume_details?.discount_price || item.perfume?.discount_price) || 
+                                           (item.perfume_details?.price || item.perfume?.price) || 0))
+                        ).toLocaleString()}
                       </Typography>
                     </TableCell>
                     <TableCell align="center">

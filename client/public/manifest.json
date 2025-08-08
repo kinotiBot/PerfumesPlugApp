@@ -1,15 +1,57 @@
 {
   "short_name": "Perfumes Plug",
-  "name": "Perfumes Plug App",
+  "name": "Perfumes Plug - Luxury Perfumes Store",
+  "description": "Your one-stop shop for luxury perfumes with seamless mobile shopping experience",
   "icons": [
     {
       "src": "favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
+    },
+    {
+      "src": "images/icon-192x192.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "images/icon-512x512.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512",
+      "purpose": "maskable any"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
+  "orientation": "portrait-primary",
   "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "background_color": "#ffffff",
+  "categories": ["shopping", "lifestyle"],
+  "lang": "en",
+  "dir": "ltr",
+  "scope": "/",
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Browse Products",
+      "short_name": "Products",
+      "description": "Browse our luxury perfume collection",
+      "url": "/products",
+      "icons": [{ "src": "favicon.ico", "sizes": "32x32" }]
+    },
+    {
+      "name": "My Orders",
+      "short_name": "Orders",
+      "description": "View your order history",
+      "url": "/orders",
+      "icons": [{ "src": "favicon.ico", "sizes": "32x32" }]
+    },
+    {
+      "name": "Shopping Cart",
+      "short_name": "Cart",
+      "description": "View items in your cart",
+      "url": "/cart",
+      "icons": [{ "src": "favicon.ico", "sizes": "32x32" }]
+    }
+  ]
 }
