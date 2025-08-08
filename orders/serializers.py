@@ -91,6 +91,21 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         return order
 
 
+class PaymentStatusUpdateSerializer(serializers.Serializer):
+    """Serializer for updating payment status of an order"""
+    payment_status = serializers.BooleanField(
+        help_text="True for paid, False for unpaid"
+    )
+    
+    def validate_payment_status(self, value):
+        """Validate payment status value"""
+        if not isinstance(value, bool):
+            raise serializers.ValidationError(
+                "Payment status must be a boolean value (true or false)"
+            )
+        return value
+
+
 class GuestOrderCreateSerializer(serializers.ModelSerializer):
     # Guest contact information
     guest_name = serializers.CharField(max_length=100)

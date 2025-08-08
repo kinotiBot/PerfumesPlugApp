@@ -27,7 +27,7 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { format } from 'date-fns';
-import { getAllOrders, updateOrderStatus } from '../../features/order/orderSlice';
+import { getAllOrders, updateOrderStatus, updatePaymentStatus } from '../../features/order/orderSlice';
 import AdminLayout from '../../components/admin/AdminLayout';
 
 const Orders = () => {
@@ -74,6 +74,24 @@ const Orders = () => {
       dispatch(updateOrderStatus({
         orderId: selectedOrder.id,
         status: event.target.value
+      })).then(() => {
+        handleCloseDialog();
+        dispatch(getAllOrders({ 
+          page: page + 1, 
+          limit: rowsPerPage,
+          status: statusFilter,
+          order_id: orderIdFilter
+        }));
+      });
+    }
+  };
+
+  const handlePaymentStatusChange = (event) => {
+    if (selectedOrder) {
+      const paymentStatus = event.target.value === 'paid';
+      dispatch(updatePaymentStatus({
+        orderId: selectedOrder.id,
+        paymentStatus: paymentStatus
       })).then(() => {
         handleCloseDialog();
         dispatch(getAllOrders({ 
@@ -326,6 +344,20 @@ const Orders = () => {
                         <MenuItem value="shipped">Shipped</MenuItem>
                         <MenuItem value="delivered">Delivered</MenuItem>
                         <MenuItem value="cancelled">Cancelled</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography variant="subtitle1">Payment Status</Typography>
+                    <FormControl fullWidth sx={{ mt: 1 }}>
+                      <InputLabel>Payment Status</InputLabel>
+                      <Select
+                        value={selectedOrder.payment_status ? 'paid' : 'unpaid'}
+                        label="Payment Status"
+                        onChange={handlePaymentStatusChange}
+                      >
+                        <MenuItem value="unpaid">Unpaid</MenuItem>
+                        <MenuItem value="paid">Paid</MenuItem>
                       </Select>
                     </FormControl>
                   </Grid>

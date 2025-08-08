@@ -7,7 +7,8 @@ from .models import Order, OrderItem, Cart, CartItem
 from perfumes.models import Perfume
 from .serializers import (
     OrderSerializer, OrderItemSerializer, CartSerializer,
-    CartItemSerializer, OrderCreateSerializer, GuestOrderCreateSerializer
+    CartItemSerializer, OrderCreateSerializer, GuestOrderCreateSerializer,
+    PaymentStatusUpdateSerializer
 )
 
 class CartViewSet(viewsets.GenericViewSet):
@@ -182,6 +183,27 @@ class OrderViewSet(viewsets.ModelViewSet):
         
         serializer = self.get_serializer(order)
         return Response(serializer.data)
+    
+    @action(detail=True, methods=['post'])
+    def update_payment_status(self, request, pk=None):
+        """Update the payment status of an order"""
+        order = self.get_object()
+        serializer = PaymentStatusUpdateSerializer(data=request.data)
+        
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Update payment status
+        payment_status = serializer.validated_data['payment_status']
+        order.payment_status = payment_status
+        order.save()
+        
+        return Response({
+            'message': f'Payment status updated to {"paid" if payment_status else "unpaid"}',
+            'order_id': order.id,
+            'order_number': order.order_number,
+            'payment_status': order.payment_status
+        })
     
     @action(detail=False, methods=['post'], permission_classes=[])
     def guest(self, request):

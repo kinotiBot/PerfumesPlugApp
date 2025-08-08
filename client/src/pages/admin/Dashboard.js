@@ -26,6 +26,7 @@ import {
   TrendingUp,
 } from '@mui/icons-material';
 import { getAllOrders } from '../../features/order/orderSlice';
+import { getAllUsers } from '../../features/user/userSlice';
 import AdminLayout from '../../components/admin/AdminLayout';
 
 const Dashboard = () => {
@@ -33,6 +34,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   
   const { orders, loading } = useSelector((state) => state.order);
+  const { users, loading: usersLoading } = useSelector((state) => state.user);
   const { userInfo, isAuthenticated } = useSelector((state) => state.auth);
 
   const [stats, setStats] = useState({
@@ -56,7 +58,8 @@ const Dashboard = () => {
       return;
     }
 
-    dispatch(getAllOrders());
+    dispatch(getAllOrders({ getAllForStats: true }));
+    dispatch(getAllUsers());
   }, [dispatch, isAuthenticated, navigate, userInfo]);
 
   useEffect(() => {
@@ -102,7 +105,7 @@ const Dashboard = () => {
         .slice(0, 5)
     : [];
 
-  if (loading) {
+  if (loading || usersLoading) {
     return (
       <AdminLayout>
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
@@ -333,7 +336,7 @@ const Dashboard = () => {
                     <Typography color="textSecondary" gutterBottom variant="body2">
                       TOTAL CUSTOMERS
                     </Typography>
-                    <Typography variant="h4">1,253</Typography>
+                    <Typography variant="h4">{users ? users.length : 0}</Typography>
                   </Box>
                   <Avatar
                     sx={{

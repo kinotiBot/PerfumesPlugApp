@@ -53,8 +53,24 @@ const LogoContainer = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   textDecoration: 'none',
   color: 'inherit',
+  gap: theme.spacing(1.5),
   '&:hover': {
     textDecoration: 'none',
+  },
+}));
+
+const LogoImage = styled('img')(({ theme }) => ({
+  height: '40px',
+  width: 'auto',
+  borderRadius: '8px',
+  boxShadow: '0 2px 8px rgba(255, 215, 0, 0.2)',
+  transition: 'all 0.3s ease',
+  '&:hover': {
+    transform: 'scale(1.05)',
+    boxShadow: '0 4px 16px rgba(255, 215, 0, 0.3)',
+  },
+  [theme.breakpoints.down('sm')]: {
+    height: '32px',
   },
 }));
 
@@ -265,6 +281,10 @@ const Header = () => {
 
           {/* Logo */}
           <LogoContainer component={RouterLink} to="/" sx={{ mr: 4 }}>
+            <LogoImage 
+              src="/images/perfumes_plug_logo.jpg" 
+              alt="Perfumes Plug Rwanda Logo"
+            />
             <LogoText variant="h6" noWrap>
               Perfumes Plug Rwanda
             </LogoText>

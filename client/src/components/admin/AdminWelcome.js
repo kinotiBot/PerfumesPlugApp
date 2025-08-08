@@ -53,10 +53,16 @@ const AdminWelcome = () => {
   ];
 
   return (
-    <Card sx={{ mb: 4, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white' }}>
+    <Card sx={{ 
+      mb: 4, 
+      background: 'linear-gradient(135deg, #000000 0%, #1A1A1A 50%, #000000 100%)', 
+      color: '#F8F8F8',
+      border: '2px solid #FFD700',
+      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5), 0 4px 16px rgba(255, 215, 0, 0.3)'
+    }}>
       <CardContent sx={{ p: 4 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-          <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', mr: 2, width: 56, height: 56 }}>
+          <Avatar sx={{ bgcolor: '#FFD700', color: '#000000', mr: 2, width: 56, height: 56 }}>
             <AdminPanelSettings sx={{ fontSize: 32 }} />
           </Avatar>
           <Box>
@@ -67,9 +73,10 @@ const AdminWelcome = () => {
               <Chip
                 label={user?.is_superuser ? 'Super Administrator' : 'Staff Member'}
                 sx={{
-                  bgcolor: 'rgba(255,255,255,0.2)',
-                  color: 'white',
+                  bgcolor: '#FFD700',
+                  color: '#000000',
                   fontWeight: 600,
+                  border: '1px solid #FFED4A',
                 }}
               />
               <Typography variant="body1" sx={{ opacity: 0.9 }}>
@@ -88,28 +95,30 @@ const AdminWelcome = () => {
             <Grid item xs={12} sm={6} md={4} key={index}>
               <Card
                 sx={{
-                  bgcolor: 'rgba(255,255,255,0.1)',
+                  bgcolor: 'rgba(255, 215, 0, 0.1)',
                   backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(255,255,255,0.2)',
+                  border: '1px solid rgba(255, 215, 0, 0.3)',
                   cursor: 'pointer',
-                  transition: 'all 0.2s',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   '&:hover': {
-                    bgcolor: 'rgba(255,255,255,0.2)',
+                    bgcolor: 'rgba(255, 215, 0, 0.2)',
                     transform: 'translateY(-2px)',
+                    borderColor: '#FFD700',
+                    boxShadow: '0 8px 25px rgba(255, 215, 0, 0.3)',
                   },
                 }}
                 onClick={() => navigate(action.path)}
               >
                 <CardContent>
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', mr: 2 }}>
+                    <Avatar sx={{ bgcolor: '#FFD700', color: '#000000', mr: 2 }}>
                       {action.icon}
                     </Avatar>
-                    <Typography variant="h6" sx={{ color: 'white', fontWeight: 600 }}>
+                    <Typography variant="h6" sx={{ color: '#F8F8F8', fontWeight: 600 }}>
                       {action.title}
                     </Typography>
                   </Box>
-                  <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+                  <Typography variant="body2" sx={{ color: '#B0B0B0' }}>
                     {action.description}
                   </Typography>
                 </CardContent>
@@ -122,10 +131,13 @@ const AdminWelcome = () => {
           <Button
             variant="contained"
             sx={{
-              bgcolor: 'rgba(255,255,255,0.2)',
-              color: 'white',
+              bgcolor: '#FFD700',
+              color: '#000000',
+              border: '2px solid #FFD700',
               '&:hover': {
-                bgcolor: 'rgba(255,255,255,0.3)',
+                bgcolor: '#FFED4A',
+                transform: 'translateY(-2px)',
+                boxShadow: '0 8px 25px rgba(255, 215, 0, 0.4)',
               },
             }}
             onClick={() => navigate('/admin')}
@@ -136,11 +148,13 @@ const AdminWelcome = () => {
             <Button
               variant="outlined"
               sx={{
-                borderColor: 'rgba(255,255,255,0.5)',
-                color: 'white',
+                borderColor: '#FFD700',
+                color: '#FFD700',
+                borderWidth: '2px',
                 '&:hover': {
-                  borderColor: 'white',
-                  bgcolor: 'rgba(255,255,255,0.1)',
+                  borderColor: '#FFED4A',
+                  backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                  transform: 'translateY(-2px)',
                 },
               }}
               onClick={() => navigate('/admin/superuser')}

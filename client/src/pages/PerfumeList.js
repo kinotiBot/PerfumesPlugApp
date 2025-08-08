@@ -318,6 +318,20 @@ const PerfumeList = () => {
             sx={{ right: perfume.on_sale ? '80px' : '10px' }}
           />
         )}
+        {!perfume.is_in_stock && (
+          <Chip
+            label="Out of Stock"
+            color="default"
+            size="small"
+            className="price-badge out-of-stock-badge"
+            sx={{ 
+              right: perfume.on_sale && perfume.featured ? '160px' : 
+                     perfume.on_sale || perfume.featured ? '80px' : '10px',
+              backgroundColor: '#f5f5f5',
+              color: '#666'
+            }}
+          />
+        )}
         <CardMedia
           component="img"
           height="200"
@@ -373,12 +387,22 @@ const PerfumeList = () => {
         <CardActions>
           <Button
             size="small"
-            variant="contained"
+            variant={perfume.is_in_stock ? "contained" : "outlined"}
             startIcon={<ShoppingCart />}
             onClick={() => handleAddToCart(perfume)}
+            disabled={!perfume.is_in_stock}
             fullWidth
+            sx={{
+              ...(perfume.is_in_stock ? {} : {
+                color: '#666',
+                borderColor: '#ccc',
+                '&:hover': {
+                  borderColor: '#999'
+                }
+              })
+            }}
           >
-            Add to Cart
+            {perfume.is_in_stock ? 'Add to Cart' : 'Out of Stock'}
           </Button>
         </CardActions>
       </Card>

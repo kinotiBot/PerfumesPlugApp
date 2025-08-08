@@ -176,7 +176,14 @@ export const getAllOrders = createAsyncThunk(
         },
       };
       
-      // Build query parameters
+      // For dashboard statistics, we need all orders, not paginated
+      if (params.getAllForStats) {
+        // Fetch all orders by setting a very high page size
+        const { data } = await axios.get(getApiUrl('/api/orders/?page_size=10000'), config);
+        return data;
+      }
+      
+      // Build query parameters for regular pagination
       const queryParams = new URLSearchParams();
       if (params.page) queryParams.append('page', params.page);
       if (params.limit) queryParams.append('limit', params.limit);
@@ -222,6 +229,34 @@ export const updateOrderStatus = createAsyncThunk(
       } else {
         return rejectWithValue(error.message);
       }
+    }
+  }
+);
+
+// Update payment status (admin)
+export const updatePaymentStatus = createAsyncThunk(
+  'order/updatePaymentStatus',
+  async ({ orderId, paymentStatus }, { getState, rejectWithValue }) => {
+    try {
+      const { auth } = getState();
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${auth.userToken}`,
+        },
+      };
+
+      const response = await axios.post(
+        `${getApiUrl()}/api/orders/${orderId}/update_payment_status/`,
+        { payment_status: paymentStatus },
+        config
+      );
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || 'Failed to update payment status'
+      );
     }
   }
 );
@@ -333,6 +368,19 @@ const orderSlice = createSlice({
         state.order = payload;
       })
       .addCase(updateOrderStatus.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload;
+      })
+      // Update payment status (admin)
+      .addCase(updatePaymentStatus.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updatePaymentStatus.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.success = true;
+        state.order = payload;
+      })
+      .addCase(updatePaymentStatus.rejected, (state, { payload }) => {
         state.loading = false;
         state.error = payload;
       });

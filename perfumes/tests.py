@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework.test import APITestCase
 from rest_framework import status
-from django.contrib.auth.models import User
+from users.models import User
 from .models import Category, Brand, Perfume
 from .serializers import PerfumeSerializer
 from PIL import Image
@@ -107,8 +107,13 @@ class PerfumeSerializerTest(TestCase):
 class PerfumeAPITest(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            username='testuser',
-            password='testpass123'
+            email='testuser@example.com',
+            password='testpass123',
+            first_name='Test',
+            last_name='User',
+            is_admin=True,
+            is_staff=True,
+            is_superuser=True
         )
         self.category = Category.objects.create(name='Men', slug='men')
         self.brand = Brand.objects.create(name='Tom Ford', slug='tom-ford')

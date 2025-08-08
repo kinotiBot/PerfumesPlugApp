@@ -284,7 +284,7 @@ const Home = () => {
                 gutterBottom
                 className="elegant-title"
                 sx={{ 
-                  fontSize: { xs: '2.5rem', md: '4rem' },
+                  fontSize: { xs: '2rem', md: '3rem' },
                   background: 'linear-gradient(135deg, #FFD700, #FFED4A)',
                   backgroundClip: 'text',
                   WebkitBackgroundClip: 'text',
@@ -304,7 +304,7 @@ const Home = () => {
                 sx={{ 
                   color: '#F8F8F8', 
                   fontWeight: 400, 
-                  fontSize: { xs: '1.1rem', md: '1.5rem' },
+                  fontSize: { xs: '0.95rem', md: '1.2rem' },
                   lineHeight: 1.4,
                   mb: 4
                 }}
