@@ -232,12 +232,7 @@ const Header = () => {
   
   const cartItemsCount = cartCount || 0;
 
-  // Load cart data when user is authenticated
-  useEffect(() => {
-    if (isAuthenticated) {
-      dispatch(getCart());
-    }
-  }, [dispatch, isAuthenticated]);
+  // Cart loading is now handled in App.js to avoid duplicate calls
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);

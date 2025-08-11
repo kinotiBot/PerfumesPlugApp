@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
   Typography,
@@ -16,6 +17,8 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  CircularProgress,
+  Alert,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -23,21 +26,19 @@ import {
   Delete as DeleteIcon,
 } from '@mui/icons-material';
 import AdminLayout from '../../components/admin/AdminLayout';
-
-// Mock data for categories
-const mockCategories = [
-  { id: 1, name: 'Eau de Parfum', description: 'Long-lasting fragrance with 15-20% perfume oil' },
-  { id: 2, name: 'Eau de Toilette', description: 'Light fragrance with 5-15% perfume oil' },
-  { id: 3, name: 'Cologne', description: 'Very light fragrance with 2-4% perfume oil' },
-  { id: 4, name: 'Perfume Oil', description: 'Concentrated fragrance without alcohol' },
-];
+import { getCategories } from '../../features/perfume/perfumeSlice';
 
 const Categories = () => {
-  const [categories, setCategories] = useState(mockCategories);
+  const dispatch = useDispatch();
+  const { categories, loading, error } = useSelector((state) => state.perfume);
   const [open, setOpen] = useState(false);
   const [currentCategory, setCurrentCategory] = useState({ name: '', description: '' });
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    dispatch(getCategories());
+  }, [dispatch]);
 
   const handleOpen = () => {
     setCurrentCategory({ name: '', description: '' });
@@ -50,13 +51,18 @@ const Categories = () => {
   };
 
   const handleEdit = (category) => {
-    setCurrentCategory(category);
+    setCurrentCategory({
+      id: category.id,
+      name: category.name || '',
+      description: category.description || ''
+    });
     setIsEditing(true);
     setOpen(true);
   };
 
   const handleDelete = (id) => {
-    setCategories(categories.filter(category => category.id !== id));
+    // TODO: Implement API call to delete category
+    console.log('Delete category:', id);
   };
 
   const handleChange = (e) => {
@@ -65,24 +71,35 @@ const Categories = () => {
   };
 
   const handleSubmit = () => {
-    if (isEditing) {
-      setCategories(categories.map(category => 
-        category.id === currentCategory.id ? currentCategory : category
-      ));
-    } else {
-      const newCategory = {
-        id: Math.max(...categories.map(c => c.id), 0) + 1,
-        ...currentCategory
-      };
-      setCategories([...categories, newCategory]);
-    }
+    // TODO: Implement API calls to create/update category
+    console.log(isEditing ? 'Update category:' : 'Create category:', currentCategory);
     handleClose();
   };
 
-  const filteredCategories = categories.filter(category =>
+  const filteredCategories = categories?.filter(category =>
     category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    category.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+    (category.description && category.description.toLowerCase().includes(searchTerm.toLowerCase()))
+  ) || [];
+
+  if (loading) {
+    return (
+      <AdminLayout>
+        <Box sx={{ p: 3, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+          <CircularProgress />
+        </Box>
+      </AdminLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <AdminLayout>
+        <Box sx={{ p: 3 }}>
+          <Alert severity="error">Error loading categories: {error}</Alert>
+        </Box>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout>
@@ -160,7 +177,7 @@ const Categories = () => {
             type="text"
             fullWidth
             variant="outlined"
-            value={currentCategory.name}
+            value={currentCategory.name || ''}
             onChange={handleChange}
             sx={{ mb: 2 }}
           />
@@ -171,7 +188,7 @@ const Categories = () => {
             type="text"
             fullWidth
             variant="outlined"
-            value={currentCategory.description}
+            value={currentCategory.description || ''}
             onChange={handleChange}
             multiline
             rows={4}

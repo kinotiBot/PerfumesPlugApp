@@ -13,7 +13,7 @@ const TestStatsComponent = ({ orders, users }) => {
   const stats = {
     totalSales: orders ? orders.reduce((sum, order) => sum + (order.total_amount || 0), 0) : 0,
     totalOrders: orders ? orders.length : 0,
-    pendingOrders: orders ? orders.filter(order => order.status === 'pending').length : 0,
+    pendingOrders: orders ? orders.filter(order => order.status === 'P').length : 0,
     totalCustomers: users ? users.length : 0,
   };
 
@@ -55,19 +55,19 @@ describe('Dashboard Real-Time Statistics', () => {
     {
       id: 1,
       total_amount: 100.00,
-      status: 'pending',
+      status: 'P',
       created_at: '2024-01-01T00:00:00Z',
     },
     {
       id: 2,
       total_amount: 150.50,
-      status: 'processing',
+      status: 'C',
       created_at: '2024-01-02T00:00:00Z',
     },
     {
       id: 3,
       total_amount: 75.25,
-      status: 'delivered',
+      status: 'D',
       created_at: '2024-01-03T00:00:00Z',
     },
   ];

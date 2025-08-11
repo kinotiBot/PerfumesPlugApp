@@ -6,13 +6,13 @@ import { configureStore } from '@reduxjs/toolkit';
 import '@testing-library/jest-dom';
 import authReducer from '../features/auth/authSlice';
 import orderReducer from '../features/order/orderSlice';
-import { updateOrderStatus, updatePaymentStatus } from '../features/order/orderSlice';
+import { updateOrderStatus, updatePaymentReceived } from '../features/order/orderSlice';
 
 // Mock the API calls
 jest.mock('../features/order/orderSlice', () => ({
   ...jest.requireActual('../features/order/orderSlice'),
   updateOrderStatus: jest.fn(),
-  updatePaymentStatus: jest.fn(),
+  updatePaymentReceived: jest.fn(),
 }));
 
 // Simple component to test order status updates
@@ -59,6 +59,9 @@ const renderWithProviders = (component) => {
       orders: [],
       loading: false,
       error: null,
+      updatingStatus: false,
+      success: false,
+      totalPages: 1,
     },
   });
   return render(
@@ -84,8 +87,8 @@ describe('Order Status Update Functionality', () => {
       type: 'order/updateOrderStatus/fulfilled',
       payload: { ...mockOrder, status: 'processing' },
     });
-    updatePaymentStatus.mockReturnValue({
-      type: 'order/updatePaymentStatus/fulfilled', 
+    updatePaymentReceived.mockReturnValue({
+    type: 'order/updatePaymentReceived/fulfilled', 
       payload: { ...mockOrder, payment_status: true },
     });
   });

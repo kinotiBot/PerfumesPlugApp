@@ -45,6 +45,9 @@ const Dashboard = () => {
     shippedOrders: 0,
     deliveredOrders: 0,
     cancelledOrders: 0,
+    salesGrowth: 0,
+    ordersGrowth: 0,
+    customersGrowth: 0,
   });
 
   useEffect(() => {
@@ -64,26 +67,48 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (orders) {
+      const now = new Date();
+      const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+      
+      // Current period stats
       const totalSales = orders.reduce(
         (sum, order) => sum + (order.total_amount || order.total_price || 0),
         0
       );
       const pendingOrders = orders.filter(
-        (order) => order.status === 'pending'
+        (order) => order.status === 'pending' || order.status === 'P'
       ).length;
       const processingOrders = orders.filter(
-        (order) => order.status === 'processing'
+        (order) => order.status === 'processing' || order.status === 'C'
       ).length;
       const shippedOrders = orders.filter(
-        (order) => order.status === 'shipped'
+        (order) => order.status === 'shipped' || order.status === 'S'
       ).length;
       const deliveredOrders = orders.filter(
-        (order) => order.status === 'delivered'
+        (order) => order.status === 'delivered' || order.status === 'D'
       ).length;
       const cancelledOrders = orders.filter(
-        (order) => order.status === 'cancelled'
+        (order) => order.status === 'cancelled' || order.status === 'X'
       ).length;
-
+      
+      // Last month stats for growth calculation
+      const lastMonthOrders = orders.filter(
+        (order) => new Date(order.created_at) < lastMonth
+      );
+      const lastMonthSales = lastMonthOrders.reduce(
+        (sum, order) => sum + (order.total_amount || order.total_price || 0),
+        0
+      );
+      const lastMonthOrdersCount = lastMonthOrders.length;
+      
+      // Calculate growth percentages
+      const salesGrowth = lastMonthSales > 0 
+        ? Math.round(((totalSales - lastMonthSales) / lastMonthSales) * 100)
+        : 0;
+      const ordersGrowth = lastMonthOrdersCount > 0
+        ? Math.round(((orders.length - lastMonthOrdersCount) / lastMonthOrdersCount) * 100)
+        : 0;
+      
       setStats({
         totalSales,
         totalOrders: orders.length,
@@ -92,9 +117,12 @@ const Dashboard = () => {
         shippedOrders,
         deliveredOrders,
         cancelledOrders,
+        salesGrowth,
+        ordersGrowth,
+        customersGrowth: users && users.length > 0 ? Math.round((users.length / 10) * 100) / 100 : 0, // Simple growth calculation
       });
     }
-  }, [orders]);
+  }, [orders, users]);
 
   const recentOrders = orders
     ? [...orders]
@@ -213,13 +241,13 @@ const Dashboard = () => {
                     alignItems: 'center',
                   }}
                 >
-                  <TrendingUp color="success" />
+                  <TrendingUp color={stats.salesGrowth >= 0 ? "success" : "error"} />
                   <Typography
-                    color="success.main"
+                    color={stats.salesGrowth >= 0 ? "success.main" : "error.main"}
                     sx={{ mr: 1 }}
                     variant="body2"
                   >
-                    12%
+                    {stats.salesGrowth >= 0 ? '+' : ''}{stats.salesGrowth}%
                   </Typography>
                   <Typography color="textSecondary" variant="caption">
                     Since last month
@@ -263,13 +291,13 @@ const Dashboard = () => {
                     alignItems: 'center',
                   }}
                 >
-                  <TrendingUp color="success" />
+                  <TrendingUp color={stats.ordersGrowth >= 0 ? "success" : "error"} />
                   <Typography
-                    color="success.main"
+                    color={stats.ordersGrowth >= 0 ? "success.main" : "error.main"}
                     sx={{ mr: 1 }}
                     variant="body2"
                   >
-                    16%
+                    {stats.ordersGrowth >= 0 ? '+' : ''}{stats.ordersGrowth}%
                   </Typography>
                   <Typography color="textSecondary" variant="caption">
                     Since last month
@@ -355,13 +383,13 @@ const Dashboard = () => {
                     alignItems: 'center',
                   }}
                 >
-                  <TrendingUp color="success" />
+                  <TrendingUp color={stats.customersGrowth >= 0 ? "success" : "error"} />
                   <Typography
-                    color="success.main"
+                    color={stats.customersGrowth >= 0 ? "success.main" : "error.main"}
                     sx={{ mr: 1 }}
                     variant="body2"
                   >
-                    8%
+                    {stats.customersGrowth >= 0 ? '+' : ''}{stats.customersGrowth}%
                   </Typography>
                   <Typography color="textSecondary" variant="caption">
                     Since last month

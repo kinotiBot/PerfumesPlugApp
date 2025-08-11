@@ -10,6 +10,7 @@ const initialState = {
   error: null,
   success: false,
   totalPages: 1,
+  updatingStatus: false,
 };
 
 // Create order
@@ -236,11 +237,13 @@ export const updateOrderStatus = createAsyncThunk(
 );
 
 // Update payment status (admin)
-export const updatePaymentStatus = createAsyncThunk(
-  'order/updatePaymentStatus',
-  async ({ orderId, paymentStatus }, { getState, rejectWithValue }) => {
+export const updatePaymentReceived = createAsyncThunk(
+  'order/updatePaymentReceived',
+  async ({ orderId, paymentReceived }, { getState, rejectWithValue }) => {
     try {
       const { auth } = getState();
+      console.log('Auth state:', { userToken: auth.userToken ? 'present' : 'missing', isAuthenticated: auth.isAuthenticated });
+      
       const config = {
         headers: {
           'Content-Type': 'application/json',
@@ -248,16 +251,18 @@ export const updatePaymentStatus = createAsyncThunk(
         },
       };
 
-      const response = await axios.post(
-        `${getApiUrl()}/api/orders/${orderId}/update_payment_status/`,
-        { payment_status: paymentStatus },
-        config
-      );
+      const url = `${getApiUrl('/api/orders/' + orderId + '/update_payment_status/')}`;
+      const payload = { payment_status: paymentReceived };
+      console.log('Making API call:', { url, payload, headers: config.headers });
 
-      return response.data;
+      const response = await axios.patch(url, payload, config);
+      console.log('API response:', response.data);
+
+      return { orderId, paymentReceived: response.data.payment_status, order: response.data };
     } catch (error) {
+      console.error('API error:', error.response?.data || error.message);
       return rejectWithValue(
-        error.response?.data?.message || 'Failed to update payment status'
+        error.response?.data?.message || error.response?.data?.detail || 'Failed to update payment received status'
       );
     }
   }
@@ -362,28 +367,44 @@ const orderSlice = createSlice({
       })
       // Update order status (admin)
       .addCase(updateOrderStatus.pending, (state) => {
-        state.loading = true;
+        state.updatingStatus = true;
       })
       .addCase(updateOrderStatus.fulfilled, (state, { payload }) => {
-        state.loading = false;
+        state.updatingStatus = false;
         state.success = true;
         state.order = payload;
+        // Update the order in the orders array immediately
+        const orderIndex = state.orders.findIndex(order => order.id === payload.id);
+        if (orderIndex !== -1) {
+          state.orders[orderIndex] = payload;
+        }
       })
       .addCase(updateOrderStatus.rejected, (state, { payload }) => {
-        state.loading = false;
+        state.updatingStatus = false;
         state.error = payload;
       })
-      // Update payment status (admin)
-      .addCase(updatePaymentStatus.pending, (state) => {
-        state.loading = true;
+      // Update payment received (admin)
+      .addCase(updatePaymentReceived.pending, (state) => {
+        state.updatingStatus = true;
+        state.error = null;
       })
-      .addCase(updatePaymentStatus.fulfilled, (state, { payload }) => {
-        state.loading = false;
+      .addCase(updatePaymentReceived.fulfilled, (state, { payload }) => {
+        state.updatingStatus = false;
         state.success = true;
-        state.order = payload;
+        
+        // Update the order in the orders array
+        const orderIndex = state.orders.findIndex(order => order.id === payload.orderId);
+        if (orderIndex !== -1) {
+          state.orders[orderIndex] = payload.order;
+        }
+        
+        // Update the current order if it matches
+        if (state.order && state.order.id === payload.orderId) {
+          state.order = payload.order;
+        }
       })
-      .addCase(updatePaymentStatus.rejected, (state, { payload }) => {
-        state.loading = false;
+      .addCase(updatePaymentReceived.rejected, (state, { payload }) => {
+        state.updatingStatus = false;
         state.error = payload;
       });
   },

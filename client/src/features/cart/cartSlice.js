@@ -33,7 +33,12 @@ export const getCart = createAsyncThunk(
       const { data } = await axios.get(getApiUrl('/api/orders/cart/my_cart/'), config);
       return data;
     } catch (error) {
-      if (error.response && error.response.data.message) {
+      if (error.response && error.response.status === 401) {
+        return rejectWithValue('Request failed with status code 401 - Authentication required. Please log in again.');
+      } else if (error.response && error.response.status === 400) {
+        // Handle 400 errors - likely authentication issues
+        return rejectWithValue('Request failed with status code 400 - Invalid request. Please check your authentication.');
+      } else if (error.response && error.response.data.message) {
         return rejectWithValue(error.response.data.message);
       } else {
         return rejectWithValue(error.message);
@@ -61,7 +66,9 @@ export const addToCart = createAsyncThunk(
       );
       return data;
     } catch (error) {
-      if (error.response && error.response.data.message) {
+      if (error.response && error.response.status === 401) {
+        return rejectWithValue('Request failed with status code 401 - Authentication required. Please log in again.');
+      } else if (error.response && error.response.data.message) {
         return rejectWithValue(error.response.data.message);
       } else {
         return rejectWithValue(error.message);
@@ -89,7 +96,9 @@ export const updateCartItem = createAsyncThunk(
       );
       return data;
     } catch (error) {
-      if (error.response && error.response.data.message) {
+      if (error.response && error.response.status === 401) {
+        return rejectWithValue('Request failed with status code 401 - Authentication required. Please log in again.');
+      } else if (error.response && error.response.data.message) {
         return rejectWithValue(error.response.data.message);
       } else {
         return rejectWithValue(error.message);
@@ -112,7 +121,9 @@ export const removeFromCart = createAsyncThunk(
       await axios.post(getApiUrl('/api/orders/cart/remove_item/'), { item_id: itemId }, config);
       return itemId;
     } catch (error) {
-      if (error.response && error.response.data.message) {
+      if (error.response && error.response.status === 401) {
+        return rejectWithValue('Request failed with status code 401 - Authentication required. Please log in again.');
+      } else if (error.response && error.response.data.message) {
         return rejectWithValue(error.response.data.message);
       } else {
         return rejectWithValue(error.message);
@@ -135,7 +146,9 @@ export const clearCart = createAsyncThunk(
       await axios.post(getApiUrl('/api/orders/cart/clear/'), {}, config);
       return {};
     } catch (error) {
-      if (error.response && error.response.data.message) {
+      if (error.response && error.response.status === 401) {
+        return rejectWithValue('Request failed with status code 401 - Authentication required. Please log in again.');
+      } else if (error.response && error.response.data.message) {
         return rejectWithValue(error.response.data.message);
       } else {
         return rejectWithValue(error.message);

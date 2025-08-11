@@ -106,7 +106,39 @@ const Cart = () => {
         <Typography variant="h4" gutterBottom>
           Shopping Cart
         </Typography>
-        <Typography color="error">{error}</Typography>
+        <Paper sx={{ p: 3, textAlign: 'center' }}>
+          <Typography color="error" variant="h6" gutterBottom>
+            {error.includes('401') || error.includes('Unauthorized') ? 
+              'Authentication Required' : 'Error Loading Cart'
+            }
+          </Typography>
+          <Typography variant="body2" color="textSecondary" paragraph>
+            {error.includes('401') || error.includes('Unauthorized') ? 
+              'Please log in to access your cart and continue shopping.' :
+              error
+            }
+          </Typography>
+          {(error.includes('401') || error.includes('Unauthorized')) && (
+            <Button
+              component={RouterLink}
+              to="/login"
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2, mr: 2 }}
+            >
+              Log In
+            </Button>
+          )}
+          <Button
+            component={RouterLink}
+            to="/perfumes"
+            variant="outlined"
+            color="primary"
+            sx={{ mt: 2 }}
+          >
+            Continue Shopping
+          </Button>
+        </Paper>
       </Container>
     );
   }

@@ -139,7 +139,7 @@ class OrderViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['status', 'payment_status']
     search_fields = ['id', 'user__first_name', 'user__last_name', 'user__email']
-    ordering_fields = ['created_at', 'total_amount']
+    ordering_fields = ['created_at', 'total']
     
     def get_queryset(self):
         user = self.request.user
@@ -205,18 +205,14 @@ class OrderViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        # Update order status
+        # Update order status (inventory reduction is handled in the model's save method)
         order.status = new_status
         order.save()
         
-        return Response({
-            'message': f'Order status updated to {order.get_status_display()}',
-            'order_id': order.id,
-            'order_number': order.order_number,
-            'status': order.status
-        })
+        serializer = self.get_serializer(order)
+        return Response(serializer.data)
     
-    @action(detail=True, methods=['post'])
+    @action(detail=True, methods=['patch'])
     def update_payment_status(self, request, pk=None):
         """Update the payment status of an order"""
         order = self.get_object()
@@ -230,12 +226,8 @@ class OrderViewSet(viewsets.ModelViewSet):
         order.payment_status = payment_status
         order.save()
         
-        return Response({
-            'message': f'Payment status updated to {"paid" if payment_status else "unpaid"}',
-            'order_id': order.id,
-            'order_number': order.order_number,
-            'payment_status': order.payment_status
-        })
+        serializer = self.get_serializer(order)
+        return Response(serializer.data)
     
     @action(detail=False, methods=['post'], permission_classes=[])
     def guest(self, request):

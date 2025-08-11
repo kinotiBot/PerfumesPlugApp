@@ -57,6 +57,16 @@ class Order(models.Model):
         return f"Order {self.order_number}"
     
     def save(self, *args, **kwargs):
+        # Check if this is an existing order and status is changing to delivered
+        is_status_change_to_delivered = False
+        if self.pk:
+            try:
+                old_order = Order.objects.get(pk=self.pk)
+                if old_order.status != 'D' and self.status == 'D':
+                    is_status_change_to_delivered = True
+            except Order.DoesNotExist:
+                pass
+        
         if not self.order_number:
             # Generate a unique order number
             last_order = Order.objects.order_by('-id').first()
@@ -65,7 +75,34 @@ class Order(models.Model):
             else:
                 order_number = "ORD-000001"
             self.order_number = order_number
+        
         super().save(*args, **kwargs)
+        
+        # Reduce inventory if order is being marked as delivered
+        if is_status_change_to_delivered:
+            self._reduce_inventory()
+    
+    def _reduce_inventory(self):
+        """Reduce perfume inventory when order is delivered"""
+        try:
+            for order_item in self.items.all():
+                perfume = order_item.perfume
+                if perfume.stock >= order_item.quantity:
+                    perfume.stock -= order_item.quantity
+                    perfume.save()
+                else:
+                    # Log warning but don't fail the operation
+                    import logging
+                    logger = logging.getLogger(__name__)
+                    logger.warning(
+                        f"Insufficient stock for {perfume.name} in order {self.order_number}. "
+                        f"Current stock: {perfume.stock}, Required: {order_item.quantity}"
+                    )
+        except Exception as e:
+            # Log error but don't fail the operation
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Error reducing inventory for order {self.order_number}: {str(e)}")
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')

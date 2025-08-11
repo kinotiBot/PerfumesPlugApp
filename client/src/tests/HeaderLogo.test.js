@@ -11,7 +11,7 @@ import theme from '../theme';
 // Mock data for testing
 const mockStore = configureStore({
   reducer: {
-    auth: (state = { isAuthenticated: false, user: null }, action) => state,
+    auth: (state = { isAuthenticated: false, user: { is_staff: false } }, action) => state,
     cart: (state = { items: [], totalQuantity: 0 }, action) => state,
   },
 });

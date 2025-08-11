@@ -9,9 +9,13 @@ import {
   Chip,
   Container,
   Divider,
+  FormControl,
   Grid,
+  InputLabel,
   Link,
+  MenuItem,
   Paper,
+  Select,
   Table,
   TableBody,
   TableCell,
@@ -21,7 +25,7 @@ import {
   Typography,
   CircularProgress,
 } from '@mui/material';
-import { getOrderDetails, cancelOrder } from '../features/order/orderSlice';
+import { getOrderDetails, cancelOrder, updatePaymentReceived } from '../features/order/orderSlice';
 import { getImageUrl } from '../utils/api';
 
 const OrderDetail = () => {
@@ -30,7 +34,7 @@ const OrderDetail = () => {
   const { id } = useParams();
 
   const { order, loading, error } = useSelector((state) => state.order);
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -47,6 +51,20 @@ const OrderDetail = () => {
     if (window.confirm('Are you sure you want to cancel this order?')) {
       dispatch(cancelOrder(id));
     }
+  };
+
+  const handlePaymentStatusChange = (event) => {
+    const paymentReceived = event.target.value === 'paid';
+    
+    dispatch(updatePaymentReceived({
+      orderId: order.id,
+      paymentReceived: paymentReceived
+    })).then((result) => {
+      // Refresh order details after update
+      dispatch(getOrderDetails(id));
+    }).catch((error) => {
+      console.error('Payment status update error:', error);
+    });
   };
 
   const getStatusColor = (status) => {
@@ -203,19 +221,35 @@ const OrderDetail = () => {
             <Typography variant="subtitle1" gutterBottom>
               Payment Status
             </Typography>
-            <Chip
-              label={
-                order.payment_status === 'pending'
-                  ? 'Pending'
-                  : order.payment_status === 'paid'
-                  ? 'Paid'
-                  : order.payment_status === 'failed'
-                  ? 'Failed'
-                  : 'Refunded'
-              }
-              color={getPaymentStatusColor(order.payment_status)}
-              size="small"
-            />
+            {user && user.is_staff ? (
+              <FormControl size="small" sx={{ minWidth: 120 }}>
+                <InputLabel>Payment Status</InputLabel>
+                <Select
+                  value={order.payment_status === true ? 'paid' : order.payment_status === false ? 'pending' : order.payment_status}
+                  label="Payment Status"
+                  onChange={handlePaymentStatusChange}
+                >
+                  <MenuItem value="pending">Pending</MenuItem>
+                  <MenuItem value="paid">Paid</MenuItem>
+                  <MenuItem value="failed">Failed</MenuItem>
+                  <MenuItem value="refunded">Refunded</MenuItem>
+                </Select>
+              </FormControl>
+            ) : (
+              <Chip
+                label={
+                  order.payment_status === 'pending' || order.payment_status === false
+                    ? 'Pending'
+                    : order.payment_status === 'paid' || order.payment_status === true
+                    ? 'Paid'
+                    : order.payment_status === 'failed'
+                    ? 'Failed'
+                    : 'Refunded'
+                }
+                color={getPaymentStatusColor(order.payment_status)}
+                size="small"
+              />
+            )}
           </Paper>
 
           <Paper sx={{ p: 3, mb: 3 }}>

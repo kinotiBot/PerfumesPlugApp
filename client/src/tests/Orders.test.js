@@ -10,24 +10,24 @@ import authReducer from '../features/auth/authSlice';
 // Mock the API calls
 jest.mock('../features/order/orderSlice', () => ({
   ...jest.requireActual('../features/order/orderSlice'),
-  getAllOrders: jest.fn(() => ({ type: 'orders/getAllOrders/pending' })),
+  getAllOrders: jest.fn(() => ({ type: 'order/getAllOrders/pending' })),
 }));
 
 const createMockStore = (initialState = {}) => {
   return configureStore({
     reducer: {
-      orders: orderReducer,
+      order: orderReducer,
       auth: authReducer,
     },
     preloadedState: {
-      orders: {
+      order: {
         orders: [
           {
             id: 1,
             created_at: '2024-01-01T00:00:00Z',
             user: { first_name: 'John', last_name: 'Doe' },
             total_amount: '99.99',
-            status: 'pending',
+            status: 'P',
             payment_status: true, // Boolean value
           },
           {
@@ -35,12 +35,15 @@ const createMockStore = (initialState = {}) => {
             created_at: '2024-01-02T00:00:00Z',
             user: { first_name: 'Jane', last_name: 'Smith' },
             total_amount: '149.99',
-            status: 'confirmed',
+            status: 'C',
             payment_status: false, // Boolean value
           },
         ],
         loading: false,
         error: null,
+        updatingStatus: false,
+        success: false,
+        totalPages: 1,
       },
       auth: {
         user: { role: 'admin' },
@@ -76,19 +79,22 @@ describe('Orders Component', () => {
 
   test('handles undefined payment_status gracefully', async () => {
     const storeWithUndefinedPayment = createMockStore({
-      orders: {
+      order: {
         orders: [
           {
             id: 3,
             created_at: '2024-01-03T00:00:00Z',
             user: { first_name: 'Test', last_name: 'User' },
             total_amount: '199.99',
-            status: 'delivered',
+            status: 'D',
             payment_status: undefined,
           },
         ],
         loading: false,
         error: null,
+        updatingStatus: false,
+        success: false,
+        totalPages: 1,
       },
     });
     

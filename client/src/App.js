@@ -45,11 +45,16 @@ const App = () => {
 
   useEffect(() => {
     // Get cart if user is authenticated, otherwise load guest cart
-    if (isAuthenticated) {
-      dispatch(getCart());
-    } else {
-      dispatch(loadGuestCart());
-    }
+    // Add a small delay to ensure auth state is properly initialized
+    const timer = setTimeout(() => {
+      if (isAuthenticated) {
+        dispatch(getCart());
+      } else {
+        dispatch(loadGuestCart());
+      }
+    }, 100);
+    
+    return () => clearTimeout(timer);
   }, [dispatch, isAuthenticated]);
 
   return (

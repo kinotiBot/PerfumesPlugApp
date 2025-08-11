@@ -39,10 +39,10 @@ import {
   CheckCircle,
   Cancel,
 } from '@mui/icons-material';
-import { getAllPerfumes, getCategories, getBrands } from '../../features/perfume/perfumeSlice';
+import { getAllPerfumes, getCategories, getBrands, deletePerfume } from '../../features/perfume/perfumeSlice';
 import AdminLayout from '../../components/admin/AdminLayout';
 import axios from 'axios';
-import { getApiUrl } from '../../utils/api';
+import { getApiUrl, getImageUrl } from '../../utils/api';
 
 const Products = () => {
   const dispatch = useDispatch();
@@ -298,10 +298,17 @@ const Products = () => {
     }
   };
 
-  const handleDeleteProduct = (id) => {
-    if (window.confirm('Are you sure you want to delete this product?')) {
-      // Implement delete product functionality
-      console.log('Delete product with ID:', id);
+  const handleDeleteProduct = async (perfume) => {
+    if (window.confirm(`Are you sure you want to delete "${perfume.name}"? This action cannot be undone.`)) {
+      try {
+        await dispatch(deletePerfume(perfume.slug)).unwrap();
+        // Refresh the perfumes list after successful deletion
+        dispatch(getAllPerfumes({ page: page + 1, limit: rowsPerPage, search: searchTerm, category: filterCategory, brand: filterBrand }));
+        alert('Product deleted successfully!');
+      } catch (error) {
+        console.error('Error deleting product:', error);
+        alert('Error deleting product: ' + (error || 'Unknown error'));
+      }
     }
   };
 
@@ -432,9 +439,10 @@ const Products = () => {
                           component="img"
                           height="60"
                           image={
-                            perfume.images && perfume.images.length > 0
-                              ? perfume.images[0].image
-                              : '/images/placeholder-perfume.svg'
+                            getImageUrl(
+                              perfume.image ||
+                              (perfume.images && perfume.images.length > 0 ? perfume.images[0].image : null)
+                            ) || '/images/placeholder-perfume.svg'
                           }
                           alt={perfume.name}
                           sx={{ objectFit: 'contain' }}
@@ -490,7 +498,7 @@ const Products = () => {
                       </IconButton>
                       <IconButton
                         color="error"
-                        onClick={() => handleDeleteProduct(perfume.id)}
+                        onClick={() => handleDeleteProduct(perfume)}
                       >
                         <Delete />
                       </IconButton>
