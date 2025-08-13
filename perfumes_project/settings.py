@@ -171,8 +171,7 @@ CORS_URLS_REGEX = r'^/(api|media)/.*$'
 # Add your frontend domain when deployed
 if not DEBUG:
     CORS_ALLOWED_ORIGINS.extend([
-        # Add your production frontend URLs here
-        # "https://your-frontend-domain.netlify.app",
+        "https://perfumes-plug-app.vercel.app",
     ])
 
 # Static files configuration for production

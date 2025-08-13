@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { getApiUrl } from '../../utils/api';
 
 // Get user token from localStorage
 const userToken = localStorage.getItem('userToken')
@@ -27,7 +28,7 @@ export const registerUser = createAsyncThunk(
         },
       };
       const { data } = await axios.post(
-        '/api/users/register/',
+        getApiUrl('/api/users/register/'),
         userData,
         config
       );
@@ -54,7 +55,7 @@ export const loginUser = createAsyncThunk(
         },
       };
       const { data } = await axios.post(
-        '/api/users/login/',
+        getApiUrl('/api/users/login/'),
         userData,
         config
       );
@@ -81,7 +82,7 @@ export const getUserProfile = createAsyncThunk(
           Authorization: `Bearer ${auth.userToken}`,
         },
       };
-      const { data } = await axios.get('/api/users/profile/me/', config);
+      const { data } = await axios.get(getApiUrl('/api/users/profile/me/'), config);
       return data;
     } catch (error) {
       if (error.response && error.response.data.message) {
@@ -106,7 +107,7 @@ export const updateUserProfile = createAsyncThunk(
         },
       };
       const { data } = await axios.put(
-        '/api/users/profile/me/',
+        getApiUrl('/api/users/profile/me/'),
         userData,
         config
       );
@@ -136,7 +137,7 @@ export const checkAuth = createAsyncThunk(
           Authorization: `Bearer ${auth.userToken}`,
         },
       };
-      const { data } = await axios.get('/api/users/profile/me/', config);
+      const { data } = await axios.get(getApiUrl('/api/users/profile/me/'), config);
       return data;
     } catch (error) {
       localStorage.removeItem('userToken');
