@@ -21,7 +21,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . /code/
 
 # Expose port
-EXPOSE 8000
+EXPOSE $PORT
 
-# Run the application
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Run migrations and start the application
+CMD python manage.py migrate && gunicorn perfumes_project.wsgi:application --bind 0.0.0.0:$PORT
