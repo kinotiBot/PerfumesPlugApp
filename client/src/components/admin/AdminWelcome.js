@@ -16,8 +16,6 @@ import {
   Dashboard,
   Inventory,
   ShoppingCart,
-  People,
-  Settings,
 } from '@mui/icons-material';
 
 const AdminWelcome = () => {
