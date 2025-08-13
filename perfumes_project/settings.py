@@ -172,6 +172,7 @@ CORS_URLS_REGEX = r'^/(api|media)/.*$'
 if not DEBUG:
     CORS_ALLOWED_ORIGINS.extend([
         "https://perfumes-plug-app.vercel.app",
+        "https://perfumes-plug-m4bvqs3zv-joel-kinotis-projects.vercel.app",
     ])
 
 # Static files configuration for production
