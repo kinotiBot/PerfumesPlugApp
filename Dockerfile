@@ -24,4 +24,4 @@ COPY . /code/
 EXPOSE 8080
 
 # Run migrations and start the application
-CMD python manage.py migrate && gunicorn perfumes_project.wsgi:application --bind 0.0.0.0:8080
+CMD ["/bin/sh", "-c", "python manage.py migrate && exec gunicorn perfumes_project.wsgi:application --bind 0.0.0.0:${PORT:-8080}"]
