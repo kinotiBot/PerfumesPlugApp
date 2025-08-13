@@ -43,7 +43,7 @@ const Checkout = () => {
   });
   
   const { cartItems, cartTotal, loading: cartLoading } = useSelector((state) => state.cart);
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const { isAuthenticated, userInfo: user } = useSelector((state) => state.auth);
   const { loading: orderLoading, success: orderSuccess, error: orderError } = useSelector((state) => state.order);
 
   useEffect(() => {

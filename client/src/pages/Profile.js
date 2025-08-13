@@ -42,7 +42,7 @@ const Profile = () => {
   
   const [tabValue, setTabValue] = useState(0);
   
-  const { user, loading, error, success } = useSelector((state) => state.auth);
+  const { userInfo: user, loading, error, success } = useSelector((state) => state.auth);
   const { isAuthenticated } = useSelector((state) => state.auth);
 
   useEffect(() => {

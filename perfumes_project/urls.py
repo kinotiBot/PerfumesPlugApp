@@ -11,11 +11,12 @@ urlpatterns = [
     path('api/orders/', include('orders.urls')),
 ]
 
-# Serve media files with CORS headers in development
+# Serve media files with CORS headers in both development and production
+# Use custom media serving view with CORS headers
+urlpatterns += [
+    re_path(r'^media/(?P<path>.*)$', MediaServeView.as_view(), name='media'),
+]
+
+# Serve static files in development
 if settings.DEBUG:
-    # Use custom media serving view with CORS headers
-    urlpatterns += [
-        re_path(r'^media/(?P<path>.*)$', MediaServeView.as_view(), name='media'),
-    ]
-    # Serve static files normally
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

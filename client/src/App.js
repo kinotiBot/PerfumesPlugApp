@@ -23,8 +23,7 @@ import RegisterPage from './pages/auth/Register';
 import ProfilePage from './pages/Profile';
 
 // Admin Pages
-import { Dashboard, Products, Orders, Users, Categories, Brands, Customers, Settings, SuperuserPanel } from './pages/admin';
-import PerfumeInventory from './pages/admin/PerfumeInventory';
+import { Dashboard, Products, PerfumeInventory, Orders, Users, Categories, Brands, Customers, Settings, SuperuserPanel } from './pages/admin';
 
 // Auth
 import PrivateRoute from './components/routes/PrivateRoute';

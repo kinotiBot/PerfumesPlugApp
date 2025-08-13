@@ -34,7 +34,7 @@ const OrderDetail = () => {
   const { id } = useParams();
 
   const { order, loading, error } = useSelector((state) => state.order);
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const { isAuthenticated, userInfo: user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (!isAuthenticated) {

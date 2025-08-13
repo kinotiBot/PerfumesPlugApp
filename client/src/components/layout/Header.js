@@ -217,7 +217,7 @@ const Header = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   
-  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const { userInfo: user, isAuthenticated } = useSelector((state) => state.auth);
   const { cartCount } = useSelector((state) => state.cart);
   
   const cartItemsCount = cartCount || 0;

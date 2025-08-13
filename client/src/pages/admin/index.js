@@ -8,9 +8,12 @@ import Customers from './Customers';
 import Settings from './Settings';
 import SuperuserPanel from './SuperuserPanel';
 
+import PerfumeInventory from './PerfumeInventory';
+
 export {
   Dashboard,
   Products,
+  PerfumeInventory,
   Orders,
   Users,
   Categories,

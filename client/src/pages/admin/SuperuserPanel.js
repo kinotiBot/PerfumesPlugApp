@@ -35,7 +35,7 @@ import AdminLayout from '../../components/admin/AdminLayout';
 
 const SuperuserPanel = () => {
   const navigate = useNavigate();
-  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const { userInfo: user, isAuthenticated } = useSelector((state) => state.auth);
   const [systemStats, setSystemStats] = useState({
     totalUsers: 0,
     staffUsers: 0,
