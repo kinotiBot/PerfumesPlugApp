@@ -20,8 +20,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project
 COPY . /code/
 
-# Expose port (Railway will handle port mapping)
-EXPOSE 8000
+# Expose port 8080 for Railway
+EXPOSE 8080
 
 # Run migrations and start the application
-CMD python manage.py migrate && gunicorn perfumes_project.wsgi:application --bind 0.0.0.0:${PORT:-8000}
+CMD python manage.py migrate && gunicorn perfumes_project.wsgi:application --bind 0.0.0.0:8080
