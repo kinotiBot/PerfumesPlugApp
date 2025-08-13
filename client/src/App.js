@@ -21,6 +21,7 @@ import OrderDetailPage from './pages/OrderDetail';
 import LoginPage from './pages/auth/Login';
 import RegisterPage from './pages/auth/Register';
 import ProfilePage from './pages/Profile';
+import ApiTestPage from './pages/ApiTest';
 
 // Admin Pages
 import { Dashboard, Products, PerfumeInventory, Orders, Users, Categories, Brands, Customers, Settings, SuperuserPanel } from './pages/admin';
@@ -52,7 +53,7 @@ const App = () => {
         dispatch(loadGuestCart());
       }
     }, 100);
-    
+
     return () => clearTimeout(timer);
   }, [dispatch, isAuthenticated]);
 
@@ -70,6 +71,7 @@ const App = () => {
           <Route path="/cart" element={<CartPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/api-test" element={<ApiTestPage />} />
 
           {/* Checkout Route - Allow both authenticated and guest users */}
           <Route path="/checkout" element={<CheckoutPage />} />

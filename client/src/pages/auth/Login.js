@@ -90,6 +90,13 @@ const Login = () => {
               onClose={() => dispatch(clearError())}
             >
               {error}
+              {error.includes('Unable to connect') && (
+                <Box sx={{ mt: 1 }}>
+                  <Link component={RouterLink} to="/api-test" variant="body2">
+                    🔧 Run Connection Diagnostics
+                  </Link>
+                </Box>
+              )}
             </Alert>
           )}
 

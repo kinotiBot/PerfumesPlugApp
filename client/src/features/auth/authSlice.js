@@ -49,23 +49,34 @@ export const loginUser = createAsyncThunk(
   'auth/login',
   async (userData, { rejectWithValue }) => {
     try {
+      const apiUrl = getApiUrl('/api/users/login/');
+      console.log('Attempting login to:', apiUrl);
+      
       const config = {
         headers: {
           'Content-Type': 'application/json',
         },
       };
       const { data } = await axios.post(
-        getApiUrl('/api/users/login/'),
+        apiUrl,
         userData,
         config
       );
       localStorage.setItem('userToken', data.access);
       return data;
     } catch (error) {
-      if (error.response && error.response.data.message) {
-        return rejectWithValue(error.response.data.message);
+      console.error('Login error:', error);
+      
+      if (error.response) {
+        // Server responded with error status
+        const message = error.response.data.message || error.response.data.detail || 'Login failed';
+        return rejectWithValue(message);
+      } else if (error.request) {
+        // Network error - no response received
+        return rejectWithValue('Unable to connect to server. Please check your internet connection and try again.');
       } else {
-        return rejectWithValue(error.message);
+        // Other error
+        return rejectWithValue(error.message || 'An unexpected error occurred');
       }
     }
   }
@@ -132,19 +143,27 @@ export const checkAuth = createAsyncThunk(
         return rejectWithValue('No token found');
       }
       
+      const apiUrl = getApiUrl('/api/users/profile/me/');
+      console.log('Checking auth at:', apiUrl);
+      
       const config = {
         headers: {
           Authorization: `Bearer ${auth.userToken}`,
         },
       };
-      const { data } = await axios.get(getApiUrl('/api/users/profile/me/'), config);
+      const { data } = await axios.get(apiUrl, config);
       return data;
     } catch (error) {
+      console.error('Auth check error:', error);
       localStorage.removeItem('userToken');
-      if (error.response && error.response.data.message) {
-        return rejectWithValue(error.response.data.message);
+      
+      if (error.response) {
+        const message = error.response.data.message || error.response.data.detail || 'Authentication failed';
+        return rejectWithValue(message);
+      } else if (error.request) {
+        return rejectWithValue('Unable to connect to server for authentication check');
       } else {
-        return rejectWithValue(error.message);
+        return rejectWithValue(error.message || 'Authentication check failed');
       }
     }
   }
