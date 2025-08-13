@@ -1,5 +1,5 @@
 // Automated test for category navigation functionality
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { configureStore } from '@reduxjs/toolkit';
@@ -79,22 +79,18 @@ describe('Category Navigation', () => {
     renderWithProviders(<Categories />);
     
     // Check if categories are displayed
-    await waitFor(() => {
-      expect(screen.getByText('Perfume Categories')).toBeInTheDocument();
-      expect(screen.getByText('Men')).toBeInTheDocument();
-      expect(screen.getByText('Women')).toBeInTheDocument();
-      expect(screen.getByText('Unisex')).toBeInTheDocument();
-      expect(screen.getByText('Luxury')).toBeInTheDocument();
-    });
+    await screen.findByText('Perfume Categories');
+    await screen.findByText('Men');
+    await screen.findByText('Women');
+    await screen.findByText('Unisex');
+    await screen.findByText('Luxury');
   });
 
   test('category cards have browse products buttons', async () => {
     renderWithProviders(<Categories />);
     
-    await waitFor(() => {
-      const browseButtons = screen.getAllByText('Browse Products');
-      expect(browseButtons).toHaveLength(4); // One for each category
-    });
+    await screen.findAllByText('Browse Products');
+    expect(screen.getAllByText('Browse Products')).toHaveLength(4);
   });
 
   test('perfume list page handles category filter parameter', async () => {
@@ -112,16 +108,12 @@ describe('Category Navigation', () => {
   });
 
   test('categories load without errors', async () => {
-    const { container } = renderWithProviders(<Categories />);
+    renderWithProviders(<Categories />);
     
-    await waitFor(() => {
-      // Check that no error messages are displayed
-      expect(screen.queryByText(/error/i)).not.toBeInTheDocument();
-      expect(screen.queryByText(/failed/i)).not.toBeInTheDocument();
-      
-      // Check that categories are rendered
-      const categoryCards = container.querySelectorAll('.MuiCard-root');
-      expect(categoryCards.length).toBeGreaterThan(0);
-    });
+    expect(screen.queryByText(/error/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/failed/i)).not.toBeInTheDocument();
+    
+    // Check that categories are rendered
+    expect(screen.getAllByText('Browse Products')).toHaveLength(4);
   });
 });

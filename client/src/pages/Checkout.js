@@ -42,7 +42,7 @@ const Checkout = () => {
     notes: ''
   });
   
-  const { cartItems, cartTotal, loading: cartLoading, isGuestCart } = useSelector((state) => state.cart);
+  const { cartItems, cartTotal, loading: cartLoading } = useSelector((state) => state.cart);
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const { loading: orderLoading, success: orderSuccess, error: orderError } = useSelector((state) => state.order);
 

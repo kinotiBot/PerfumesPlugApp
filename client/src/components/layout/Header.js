@@ -10,10 +10,6 @@ import {
   Badge,
   Box,
   Drawer,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
   Divider,
   InputBase,
   Menu,
@@ -27,18 +23,12 @@ import {
   Menu as MenuIcon,
   Search as SearchIcon,
   ShoppingCart,
-  Person,
-  Home,
-  Store,
-  Category,
-  AdminPanelSettings,
   Logout,
   AccountCircle,
   Receipt,
 } from '@mui/icons-material';
 import { styled, alpha } from '@mui/material/styles';
 import { logout } from '../../features/auth/authSlice';
-import { getCart } from '../../features/cart/cartSlice';
 
 // Enhanced styled components
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
@@ -228,7 +218,7 @@ const Header = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   
   const { user, isAuthenticated } = useSelector((state) => state.auth);
-  const { cartItems, cartCount } = useSelector((state) => state.cart);
+  const { cartCount } = useSelector((state) => state.cart);
   
   const cartItemsCount = cartCount || 0;
 

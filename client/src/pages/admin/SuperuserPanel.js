@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Container,
   Grid,
-  Paper,
   Typography,
   Card,
   CardContent,
@@ -17,9 +16,7 @@ import {
   ListItemIcon,
   Divider,
   Alert,
-  Chip,
   Avatar,
-  IconButton,
 } from '@mui/material';
 import {
   SupervisorAccount,

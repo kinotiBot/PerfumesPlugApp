@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   Box,
   Button,
@@ -9,7 +9,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  FormControl,
   FormControlLabel,
   Grid,
   IconButton,
@@ -30,12 +29,6 @@ import {
 import { Search, Clear, Edit, Delete, Person } from '@mui/icons-material';
 import { format } from 'date-fns';
 import AdminLayout from '../../components/admin/AdminLayout';
-
-// This would be implemented in a userSlice.js file in a real application
-const getUsers = () => async (dispatch) => {
-  // API call to get users would go here
-  dispatch({ type: 'GET_USERS_SUCCESS', payload: mockUsers });
-};
 
 // Mock data for demonstration
 const mockUsers = [
@@ -80,7 +73,7 @@ const Users = () => {
   // In a real application, this would come from Redux state
   // const { users, loading, totalPages } = useSelector((state) => state.user);
   const [users, setUsers] = useState(mockUsers);
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const totalPages = 1;
 
   const [page, setPage] = useState(0);

@@ -25,7 +25,6 @@ import {
   Divider,
   List,
   ListItem,
-  ListItemText,
   Checkbox,
   FormGroup,
   FormControlLabel,
@@ -54,7 +53,7 @@ const PerfumeList = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  const { perfumes, categories, brands, loading, page, pages, count } = useSelector(
+  const { perfumes, categories, brands, loading, pages } = useSelector(
     (state) => state.perfume
   );
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -571,7 +570,7 @@ const PerfumeList = () => {
 
         <Box sx={{ mb: 2 }}>
           <Typography variant="body2" color="text.secondary">
-            {count} {count === 1 ? 'result' : 'results'} found
+            {perfumes.length} {perfumes.length === 1 ? 'result' : 'results'} found
           </Typography>
         </Box>
 
@@ -604,7 +603,3 @@ const PerfumeList = () => {
 };
 
 export default PerfumeList;
-// Remove unused import:
-// import { ListItemText } from '@mui/material';
-
-// And remove the unused 'page' variable or use it properly

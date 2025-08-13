@@ -41,7 +41,7 @@ import {
 
 const Orders = () => {
   const dispatch = useDispatch();
-  const { orders, loading, error, totalPages, success, updatingStatus } = useSelector((state) => state.order);
+  const { orders, totalPages, success, updatingStatus } = useSelector((state) => state.order);
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);

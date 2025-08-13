@@ -46,7 +46,6 @@ import {
   Cancel,
   Inventory,
   TrendingUp,
-  TrendingDown,
   Warning,
   PhotoCamera,
 } from '@mui/icons-material';
@@ -69,7 +68,7 @@ const PerfumeInventory = () => {
   const [filterBrand, setFilterBrand] = useState('');
   const [filterStock, setFilterStock] = useState('all');
   const [sortBy, setSortBy] = useState('name');
-  const [sortOrder, setSortOrder] = useState('asc');
+  const [sortOrder] = useState('asc');
   const [formData, setFormData] = useState({
     name: '',
     brand: '',

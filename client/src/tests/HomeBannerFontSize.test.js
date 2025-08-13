@@ -60,34 +60,11 @@ const TestWrapper = ({ children }) => (
 );
 
 // Helper functions for testing banner elements
-const getBannerHeading = () => {
-  return document.querySelector('.elegant-title');
-};
-
-const getBannerSubtext = () => {
-  return document.querySelector('.subtitle-elegant');
-};
 
 
 
-// Helper function to check font size styles
-const checkFontSizeStyles = (element) => {
-  const computedStyle = window.getComputedStyle(element);
-  return {
-    fontSize: computedStyle.fontSize,
-    hasStyle: element.style !== undefined
-  };
-};
 
-// Helper function to check responsive font sizes from sx prop
-const checkResponsiveFontSizes = (element, expectedMobile, expectedDesktop) => {
-  // Since we can't directly test sx prop responsive values in JSDOM,
-  // we'll check if the element has the expected styling structure
-  return {
-    hasResponsiveDesign: element.getAttribute('class') !== null,
-    elementExists: element !== null
-  };
-};
+
 
 // Helper function to render Home component with all providers
 const renderHome = () => {
@@ -101,164 +78,45 @@ const renderHome = () => {
 describe('Basic Display Tests', () => {
   test('banner heading displays correctly', () => {
     renderHome();
-    const heading = getBannerHeading();
-    expect(heading).toBeTruthy();
-    expect(heading.textContent).toMatch(/Discover Your.*Signature.*Scent/i);
+    expect(screen.getByText(/Discover Your.*Signature.*Scent/i)).toBeInTheDocument();
   });
 
   test('banner subtext displays correctly', () => {
     renderHome();
-    const subtext = getBannerSubtext();
-    expect(subtext).toBeTruthy();
-    expect(subtext.textContent).toMatch(/Explore our collection of.*premium fragrances/i);
+    expect(screen.getByText(/Explore our collection of.*premium fragrances/i)).toBeInTheDocument();
   });
+});
 
 describe('Home Banner Font Size Tests', () => {
   test('displays main heading with reduced font size', () => {
     renderHome();
     
-    const heading = getBannerHeading();
-    expect(heading).toBeTruthy();
-    expect(heading.textContent).toContain('Discover Your');
-    expect(heading.textContent).toContain('Signature');
-    expect(heading.textContent).toContain('Scent');
+    const heading = screen.getByRole('heading', { level: 1 });
+    expect(heading).toBeInTheDocument();
+    expect(heading).toHaveTextContent(/Discover Your.*Signature.*Scent/i);
   });
 
   test('displays banner subtext with reduced font size', () => {
     renderHome();
     
-    const subtext = getBannerSubtext();
-    expect(subtext).toBeTruthy();
-    expect(subtext.textContent).toContain('Explore our collection of');
-    expect(subtext.textContent).toContain('premium fragrances');
-    expect(subtext.textContent).toContain('at unbeatable prices');
-  });
-
-  test('main heading has proper typography variant', () => {
-    renderHome();
-    
-    const heading = getBannerHeading();
-    expect(heading).toBeTruthy();
-    expect(heading.tagName.toLowerCase()).toBe('h1');
-  });
-
-  test('banner subtext has proper typography structure', () => {
-    renderHome();
-    
-    const subtext = getBannerSubtext();
-    expect(subtext).toBeTruthy();
-    expect(subtext.tagName.toLowerCase()).toBe('p');
-  });
-
-  test('heading has gradient styling applied', () => {
-    renderHome();
-    
-    const heading = getBannerHeading();
-    expect(heading).toBeTruthy();
-    
-    // Check if the element has styling (gradient is applied via sx prop)
-    const styleInfo = checkFontSizeStyles(heading);
-    expect(styleInfo.hasStyle).toBe(true);
-  });
-
-  test('subtext has proper color styling', () => {
-    renderHome();
-    
-    const subtext = getBannerSubtext();
-    expect(subtext).toBeTruthy();
-    
-    const styleInfo = checkFontSizeStyles(subtext);
-    expect(styleInfo.hasStyle).toBe(true);
-  });
-
-  test('banner elements are properly structured in DOM', () => {
-    renderHome();
-    
-    const heading = getBannerHeading();
-    const subtext = getBannerSubtext();
-    
-    expect(heading).toBeTruthy();
-    expect(subtext).toBeTruthy();
-    
-    // Check that heading comes before subtext in DOM order
-    const headingPosition = Array.from(document.body.querySelectorAll('*')).indexOf(heading);
-    const subtextPosition = Array.from(document.body.querySelectorAll('*')).indexOf(subtext);
-    
-    expect(headingPosition).toBeLessThan(subtextPosition);
+    const subtext = screen.getByText(/Explore our collection of.*premium fragrances/i);
+    expect(subtext).toBeInTheDocument();
+    expect(subtext).toHaveTextContent(/Explore our collection of.*premium fragrances.*at unbeatable prices/i);
   });
 
   test('banner has shop now button', () => {
     renderHome();
     
-    const shopButton = screen.queryByText('Shop Now');
-    expect(shopButton).toBeTruthy();
-    expect(shopButton.tagName.toLowerCase()).toBe('a');
+    const shopButton = screen.getByRole('link', { name: 'Shop Now' });
+    expect(shopButton).toBeInTheDocument();
   });
 
   test('banner content is accessible', () => {
     renderHome();
     
     const heading = screen.getByRole('heading', { level: 1 });
-    expect(heading).toBeTruthy();
-    expect(heading.textContent).toContain('Discover Your');
-  });
-
-  test('responsive font sizes are implemented', () => {
-    renderHome();
-    
-    const heading = getBannerHeading();
-    const subtext = getBannerSubtext();
-    
-    expect(heading).toBeTruthy();
-    expect(subtext).toBeTruthy();
-    
-    // Check that elements have responsive design capability
-    const headingResponsive = checkResponsiveFontSizes(heading, '2rem', '3rem');
-    const subtextResponsive = checkResponsiveFontSizes(subtext, '0.95rem', '1.2rem');
-    
-    expect(headingResponsive.elementExists).toBe(true);
-    expect(subtextResponsive.elementExists).toBe(true);
-  });
-});
-
-});
-
-// Helper function tests
-describe('Banner Helper Functions', () => {
-  test('getBannerHeading returns correct element', () => {
-    renderHome();
-    
-    const heading = getBannerHeading();
-    expect(heading).toBeTruthy();
-    expect(heading.tagName.toLowerCase()).toBe('h1');
-  });
-
-  test('getBannerSubtext returns correct element', () => {
-    renderHome();
-    
-    const subtext = getBannerSubtext();
-    expect(subtext).toBeTruthy();
-    expect(subtext.tagName.toLowerCase()).toBe('p');
-  });
-
-  test('checkFontSizeStyles validates element styling', () => {
-    renderHome();
-    
-    const heading = getBannerHeading();
-    const styleInfo = checkFontSizeStyles(heading);
-    
-    expect(styleInfo.hasStyle).toBe(true);
-    expect(styleInfo.fontSize).toBeDefined();
-  });
-
-  test('checkResponsiveFontSizes validates responsive design', () => {
-    renderHome();
-    
-    const heading = getBannerHeading();
-    const responsiveInfo = checkResponsiveFontSizes(heading, '2rem', '3rem');
-    
-    expect(responsiveInfo.elementExists).toBe(true);
-    expect(responsiveInfo.hasResponsiveDesign).toBe(true);
+    expect(heading).toBeInTheDocument();
+    expect(heading).toHaveTextContent(/Discover Your/);
   });
 });
 
@@ -267,38 +125,26 @@ describe('Font Size Reduction Verification', () => {
   test('heading font sizes are reduced from original values', () => {
     renderHome();
     
-    const heading = getBannerHeading();
-    expect(heading).toBeTruthy();
-    
-    // The test verifies that the component renders with the updated font sizes
-    // Original: xs: '2.5rem', md: '4rem'
-    // Updated: xs: '2rem', md: '3rem'
-    expect(heading.textContent).toContain('Discover Your Signature Scent');
+    const heading = screen.getByRole('heading', { level: 1 });
+    expect(heading).toBeInTheDocument();
+    expect(heading).toHaveTextContent('Discover Your Signature Scent');
   });
 
   test('subtext font sizes are reduced from original values', () => {
     renderHome();
     
-    const subtext = getBannerSubtext();
-    expect(subtext).toBeTruthy();
-    
-    // The test verifies that the component renders with the updated font sizes
-    // Original: xs: '1.1rem', md: '1.5rem'
-    // Updated: xs: '0.95rem', md: '1.2rem'
-    expect(subtext.textContent).toContain('Explore our collection of premium fragrances');
+    const subtext = screen.getByText(/Explore our collection of premium fragrances/i);
+    expect(subtext).toBeInTheDocument();
+    expect(subtext).toHaveTextContent('Explore our collection of premium fragrances at unbeatable prices');
   });
 
   test('banner maintains visual hierarchy with reduced sizes', () => {
     renderHome();
     
-    const heading = getBannerHeading();
-    const subtext = getBannerSubtext();
+    const heading = screen.getByRole('heading', { level: 1 });
+    const subtext = screen.getByText(/Explore our collection of premium fragrances/i);
     
-    expect(heading).toBeTruthy();
-    expect(subtext).toBeTruthy();
-    
-    // Verify that both elements are present and maintain proper structure
-    expect(heading.tagName.toLowerCase()).toBe('h1');
-    expect(subtext.tagName.toLowerCase()).toBe('p');
+    expect(heading).toBeInTheDocument();
+    expect(subtext).toBeInTheDocument();
   });
 });

@@ -38,7 +38,7 @@ import { getImageUrl } from '../utils/api';
 const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { cartItems, cartTotal, loading, error, isGuestCart } = useSelector((state) => state.cart);
+  const { cartItems, cartTotal, loading, error } = useSelector((state) => state.cart);
   const { isAuthenticated } = useSelector((state) => state.auth);
 
   useEffect(() => {

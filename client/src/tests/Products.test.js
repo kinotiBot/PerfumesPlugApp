@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import axios from 'axios';
@@ -101,13 +102,13 @@ describe('Products Component', () => {
     fireEvent.click(addButton);
 
     const createButton = screen.getByText('Create');
+    const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {});
     fireEvent.click(createButton);
 
-    // Should show validation alert for missing fields
     await waitFor(() => {
-      // Note: jsdom doesn't support window.alert, so we'd need to mock it
-      // or check for validation state changes
+      expect(alertSpy).toHaveBeenCalledWith('Please fill all required fields');
     });
+    alertSpy.mockRestore();
   });
 
   test('sends correct data format to backend', async () => {
@@ -324,15 +325,8 @@ describe('Products Component', () => {
 
     // Mock file upload
     const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
-    const uploadButton = screen.getByText('Upload Image');
-    const fileInput = uploadButton.closest('label').querySelector('input[type="file"]');
-    
-    Object.defineProperty(fileInput, 'files', {
-      value: [file],
-      writable: false,
-    });
-    
-    fireEvent.change(fileInput);
+    const fileInput = screen.getByLabelText('Upload Image');
+    userEvent.upload(fileInput, file);
 
     const createButton = screen.getByText('Create');
     fireEvent.click(createButton);
@@ -390,15 +384,8 @@ describe('Products Component', () => {
 
     // Mock file upload
     const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
-    const uploadButton = screen.getByText('Upload Image');
-    const fileInput = uploadButton.closest('label').querySelector('input[type="file"]');
-    
-    Object.defineProperty(fileInput, 'files', {
-      value: [file],
-      writable: false,
-    });
-    
-    fireEvent.change(fileInput);
+    const fileInput = screen.getByLabelText('Upload Image');
+    userEvent.upload(fileInput, file);
 
     const createButton = screen.getByText('Create');
     fireEvent.click(createButton);

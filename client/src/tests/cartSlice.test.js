@@ -7,22 +7,16 @@ import cartReducer, {
   addToGuestCartAction,
 } from '../features/cart/cartSlice';
 
+import {
+  getGuestCart,
+  addToGuestCart,
+} from '../utils/guestCart';
+
 // Mock guest cart utilities
 jest.mock('../utils/guestCart', () => ({
   getGuestCart: jest.fn(),
   addToGuestCart: jest.fn(),
-  updateGuestCartItem: jest.fn(),
-  removeFromGuestCart: jest.fn(),
-  clearGuestCart: jest.fn(),
 }));
-
-import {
-  getGuestCart,
-  addToGuestCart,
-  updateGuestCartItem,
-  removeFromGuestCart,
-  clearGuestCart,
-} from '../utils/guestCart';
 
 describe('cartSlice', () => {
   const initialState = {

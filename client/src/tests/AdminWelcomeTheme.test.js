@@ -94,31 +94,33 @@ describe('AdminWelcome Theme Consistency', () => {
   test('does not render for non-staff user', () => {
     const nonStaffUser = { ...mockAdminUser, is_staff: false };
     const store = createMockStore(nonStaffUser);
-    const { container } = render(
+    render(
       <TestWrapper store={store}>
         <AdminWelcome />
       </TestWrapper>
     );
 
     // Component should not render anything for non-staff users
-    expect(container.firstChild).toBeNull();
+    expect(screen.queryByText(/Welcome, .+!/)).not.toBeInTheDocument();
   });
 
   test('applies consistent theme colors', () => {
     const store = createMockStore(mockAdminUser);
-    const { container } = render(
-      <TestWrapper store={store}>
-        <AdminWelcome />
-      </TestWrapper>
-    );
+    render(
+    <TestWrapper store={store}>
+      <AdminWelcome />
+    </TestWrapper>
+  );
 
-    // Check if the main card has the expected styling classes
-    const mainCard = container.querySelector('.MuiCard-root');
-    expect(mainCard).toBeInTheDocument();
-    
-    // Check if quick action cards are present
-    const actionCards = container.querySelectorAll('.MuiCard-root');
-    expect(actionCards.length).toBeGreaterThan(1); // Main card + action cards
+  // Check for main welcome text
+  expect(screen.getByText('Welcome, Admin!')).toBeInTheDocument();
+  
+  // Check if quick action cards are present
+  expect(screen.getByText('Manage Products')).toBeInTheDocument();
+  expect(screen.getByText('Process Orders')).toBeInTheDocument();
+  expect(screen.getByText('Admin Dashboard')).toBeInTheDocument();
+  const actionTitles = screen.getAllByText(/(Manage Products|Process Orders|Admin Dashboard)/);
+  expect(actionTitles.length).toBe(3); // Main card + action cards
   });
 
   test('displays correct administrative access message', () => {

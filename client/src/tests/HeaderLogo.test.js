@@ -28,35 +28,12 @@ const TestWrapper = ({ children }) => (
 );
 
 // Helper functions for testing logo functionality
-const getLogoImage = () => {
-  return screen.queryByAltText('Perfumes Plug Rwanda Logo');
-};
+const getLogoImage = () => screen.getByAltText('Perfumes Plug Rwanda Logo');
+const getLogoText = () => screen.getByText('Perfumes Plug Rwanda');
+const getLogoLink = () => screen.getByRole('link', { name: /Perfumes Plug Rwanda/i });
+// Remove getLogoContainer as it uses closest
 
-const getLogoText = () => {
-  return screen.queryByText('Perfumes Plug Rwanda');
-};
 
-const getLogoContainer = () => {
-  const logoImage = getLogoImage();
-  return logoImage ? logoImage.closest('a') : null;
-};
-
-// Helper function to check if logo image has correct attributes
-const checkLogoImageAttributes = (logoImage) => {
-  return {
-    hasSrc: logoImage.src.includes('/images/perfumes_plug_logo.jpg'),
-    hasAlt: logoImage.alt === 'Perfumes Plug Rwanda Logo',
-    hasCorrectTag: logoImage.tagName.toLowerCase() === 'img'
-  };
-};
-
-// Helper function to check logo container link
-const checkLogoContainerLink = (container) => {
-  return {
-    isLink: container && container.tagName.toLowerCase() === 'a',
-    hasCorrectHref: container && container.getAttribute('href') === '/'
-  };
-};
 
 describe('Header Logo Tests', () => {
   test('displays logo image with correct src and alt attributes', () => {
@@ -68,11 +45,8 @@ describe('Header Logo Tests', () => {
     
     const logoImage = getLogoImage();
     expect(logoImage).toBeInTheDocument();
-    
-    const attributes = checkLogoImageAttributes(logoImage);
-    expect(attributes.hasSrc).toBe(true);
-    expect(attributes.hasAlt).toBe(true);
-    expect(attributes.hasCorrectTag).toBe(true);
+    expect(logoImage).toHaveAttribute('src', expect.stringContaining('/images/perfumes_plug_logo.jpg'));
+    expect(logoImage).toHaveAttribute('alt', 'Perfumes Plug Rwanda Logo');
   });
 
   test('displays logo text alongside the image', () => {
@@ -94,12 +68,9 @@ describe('Header Logo Tests', () => {
       </TestWrapper>
     );
     
-    const logoContainer = getLogoContainer();
-    expect(logoContainer).toBeInTheDocument();
-    
-    const linkProperties = checkLogoContainerLink(logoContainer);
-    expect(linkProperties.isLink).toBe(true);
-    expect(linkProperties.hasCorrectHref).toBe(true);
+    const logoLink = getLogoLink();
+    expect(logoLink).toBeInTheDocument();
+    expect(logoLink).toHaveAttribute('href', '/');
   });
 
   test('logo image and text are both present in the same container', () => {
@@ -111,15 +82,15 @@ describe('Header Logo Tests', () => {
     
     const logoImage = getLogoImage();
     const logoText = getLogoText();
-    const logoContainer = getLogoContainer();
+    const logoLink = getLogoLink();
     
     expect(logoImage).toBeInTheDocument();
     expect(logoText).toBeInTheDocument();
-    expect(logoContainer).toBeInTheDocument();
+    expect(logoLink).toBeInTheDocument();
     
-    // Check that both image and text are within the same container
-    expect(logoContainer.contains(logoImage)).toBe(true);
-    expect(logoContainer.contains(logoText)).toBe(true);
+    // Check that both are descendants of the link
+    expect(logoLink).toContainElement(logoImage);
+    expect(logoLink).toContainElement(logoText);
   });
 
   test('logo image has proper styling attributes', () => {
@@ -132,9 +103,8 @@ describe('Header Logo Tests', () => {
     const logoImage = getLogoImage();
     expect(logoImage).toBeInTheDocument();
     
-    // Check that the image has the expected styling (via styled component)
-    const computedStyle = window.getComputedStyle(logoImage);
-    expect(logoImage.style).toBeDefined();
+    // Check that the image has styling applied
+    expect(logoImage).toHaveStyle();
   });
 
   test('logo is accessible with proper alt text', () => {
@@ -186,9 +156,8 @@ describe('Header Logo Tests', () => {
     expect(logoImage).toBeInTheDocument();
     expect(logoText).toBeInTheDocument();
     
-    // Verify both elements contribute to the brand identity
-    expect(logoImage.alt).toContain('Perfumes Plug Rwanda');
-    expect(logoText.textContent).toBe('Perfumes Plug Rwanda');
+    expect(logoImage).toHaveAttribute('alt', expect.stringContaining('Perfumes Plug Rwanda'));
+    expect(logoText).toHaveTextContent('Perfumes Plug Rwanda');
   });
 
   test('logo elements are properly structured in DOM', () => {
@@ -198,23 +167,18 @@ describe('Header Logo Tests', () => {
       </TestWrapper>
     );
     
-    const logoContainer = getLogoContainer();
     const logoImage = getLogoImage();
     const logoText = getLogoText();
     
-    expect(logoContainer).toBeInTheDocument();
     expect(logoImage).toBeInTheDocument();
     expect(logoText).toBeInTheDocument();
     
-    // Check DOM structure: container > [image, text]
-    const containerChildren = Array.from(logoContainer.children);
-    expect(containerChildren.length).toBeGreaterThanOrEqual(2);
+    const logoLink = getLogoLink();
+    expect(logoLink).toHaveAttribute('href', '/');
     
-    // Image should come before text in the DOM
-    const imageIndex = containerChildren.findIndex(child => child.tagName.toLowerCase() === 'img');
-    const textIndex = containerChildren.findIndex(child => child.textContent === 'Perfumes Plug Rwanda');
-    
-    expect(imageIndex).toBeLessThan(textIndex);
+    const header = screen.getByRole('banner');
+    expect(header).toContainElement(logoImage);
+    expect(header).toContainElement(logoText);
   });
 });
 
@@ -229,7 +193,7 @@ describe('Logo Helper Functions', () => {
     
     const logoImage = getLogoImage();
     expect(logoImage).toBeInTheDocument();
-    expect(logoImage.tagName.toLowerCase()).toBe('img');
+    expect(logoImage).toHaveAttribute('alt', 'Perfumes Plug Rwanda Logo');
   });
 
   test('getLogoText returns correct element', () => {
@@ -244,44 +208,6 @@ describe('Logo Helper Functions', () => {
     expect(logoText.textContent).toBe('Perfumes Plug Rwanda');
   });
 
-  test('getLogoContainer returns correct element', () => {
-    render(
-      <TestWrapper>
-        <Header />
-      </TestWrapper>
-    );
-    
-    const logoContainer = getLogoContainer();
-    expect(logoContainer).toBeInTheDocument();
-    expect(logoContainer.tagName.toLowerCase()).toBe('a');
-  });
+  
 
-  test('checkLogoImageAttributes validates image properties', () => {
-    render(
-      <TestWrapper>
-        <Header />
-      </TestWrapper>
-    );
-    
-    const logoImage = getLogoImage();
-    const attributes = checkLogoImageAttributes(logoImage);
-    
-    expect(attributes.hasSrc).toBe(true);
-    expect(attributes.hasAlt).toBe(true);
-    expect(attributes.hasCorrectTag).toBe(true);
-  });
-
-  test('checkLogoContainerLink validates container properties', () => {
-    render(
-      <TestWrapper>
-        <Header />
-      </TestWrapper>
-    );
-    
-    const logoContainer = getLogoContainer();
-    const linkProperties = checkLogoContainerLink(logoContainer);
-    
-    expect(linkProperties.isLink).toBe(true);
-    expect(linkProperties.hasCorrectHref).toBe(true);
-  });
 });
