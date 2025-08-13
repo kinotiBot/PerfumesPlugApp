@@ -175,6 +175,13 @@ if not DEBUG:
         "https://perfumes-plug-m4bvqs3zv-joel-kinotis-projects.vercel.app",
     ])
 
+# CSRF trusted origins for Railway deployment
+CSRF_TRUSTED_ORIGINS = [
+    "https://perfumesplugapp-production.up.railway.app",
+    "https://perfumes-plug-app.vercel.app",
+    "https://perfumes-plug-m4bvqs3zv-joel-kinotis-projects.vercel.app",
+]
+
 # Static files configuration for production
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
