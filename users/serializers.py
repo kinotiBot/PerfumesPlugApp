@@ -47,7 +47,8 @@ class UserLoginSerializer(serializers.Serializer):
         password = attrs.get('password')
         
         if email and password:
-            user = authenticate(request=self.context.get('request'), email=email, password=password)
+            # Use username=email because our custom User model uses email as USERNAME_FIELD
+            user = authenticate(request=self.context.get('request'), username=email, password=password)
             
             if not user:
                 msg = _('Unable to log in with provided credentials.')
