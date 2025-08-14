@@ -194,6 +194,10 @@ if not DEBUG:
     SECURE_HSTS_SECONDS = 86400
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
+    
+    # Railway proxy settings
+    USE_X_FORWARDED_HOST = True
+    USE_X_FORWARDED_PORT = True
 
 # Custom user model
 AUTH_USER_MODEL = 'users.User'
@@ -212,6 +216,11 @@ LOGGING = {
     },
     'loggers': {
         'django.request': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'django.security': {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': False,
