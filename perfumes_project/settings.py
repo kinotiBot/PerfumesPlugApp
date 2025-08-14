@@ -178,6 +178,7 @@ if not DEBUG:
         "https://perfumes-plug-hd7dnfcmi-joel-kinotis-projects.vercel.app",
         "https://perfumes-plug-gl3acoti3-joel-kinotis-projects.vercel.app",
         "https://perfumes-plug-edccf00hx-joel-kinotis-projects.vercel.app",
+        "https://perfumes-plug-hhaba49g1-joel-kinotis-projects.vercel.app",
     ])
 
 # CSRF trusted origins for Railway deployment
@@ -188,6 +189,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://perfumes-plug-hd7dnfcmi-joel-kinotis-projects.vercel.app",
     "https://perfumes-plug-gl3acoti3-joel-kinotis-projects.vercel.app",
     "https://perfumes-plug-edccf00hx-joel-kinotis-projects.vercel.app",
+    "https://perfumes-plug-hhaba49g1-joel-kinotis-projects.vercel.app",
 ]
 
 # Static files configuration for production
