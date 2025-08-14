@@ -107,7 +107,7 @@ export const getUserOrders = createAsyncThunk(
           Authorization: `Bearer ${auth.userToken}`,
         },
       };
-      const { data } = await axios.get(getApiUrl('/api/orders/my-orders/'), config);
+      const { data } = await axios.get(getApiUrl('/api/orders/'), config);
       return data;
     } catch (error) {
       if (error.response && error.response.data.message) {
