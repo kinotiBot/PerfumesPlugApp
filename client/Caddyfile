@@ -1,0 +1,54 @@
+# Global options
+{
+    admin off
+    persist_config off
+    auto_https off
+    
+    # Runtime logs
+    log {
+        format json
+    }
+    
+    # Server options
+    servers {
+        trusted_proxies static private_ranges 100.0.0.0/8
+    }
+}
+
+# Site block - listens on PORT environment variable (Railway assigns this)
+:{$PORT:3000} {
+    # Root directory
+    root * /usr/share/caddy
+    
+    # Enable gzip compression
+    encode gzip
+    
+    # Security headers
+    header {
+        # Remove server header
+        -Server
+        
+        # Security headers
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        X-XSS-Protection "1; mode=block"
+        Referrer-Policy "strict-origin-when-cross-origin"
+    }
+    
+    # Handle static assets with caching
+    @static {
+        path *.js *.css *.png *.jpg *.jpeg *.gif *.ico *.svg *.woff *.woff2 *.ttf *.eot
+    }
+    header @static Cache-Control "public, max-age=31536000, immutable"
+    
+    # Try to serve files, fallback to index.html for SPA routing
+    try_files {path} /index.html
+    
+    # Serve files
+    file_server
+    
+    # Access logs
+    log {
+        format json
+    }
+}
