@@ -1,0 +1,13 @@
+[build]
+builder = "NIXPACKS"
+
+[build.nixpacksConfig]
+packages = ["nodejs-18_x"]
+
+[deploy]
+startCommand = "npm run serve"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
+[env]
+NODE_ENV = "production"
