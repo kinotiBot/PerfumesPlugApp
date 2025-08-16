@@ -61,7 +61,17 @@ const App = () => {
     <>
       <Header />
       <PWAInstallPrompt />
-      <Container sx={{ minHeight: 'calc(100vh - 140px)', py: 4 }}>
+      <Container 
+        maxWidth="lg"
+        sx={{ 
+          minHeight: 'calc(100vh - 140px)', 
+          py: 4,
+          px: { xs: 1, sm: 2, md: 3 },
+          width: '100%',
+          maxWidth: { xs: '100%', sm: '100%', md: '1200px' },
+          overflow: 'hidden'
+        }}
+      >
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />

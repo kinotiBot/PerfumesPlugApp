@@ -2,10 +2,25 @@
 
 /* Base mobile styles */
 @media (max-width: 768px) {
+  /* Prevent horizontal overflow */
+  html, body {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+  }
+
+  #root {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
   /* Container adjustments */
   .MuiContainer-root {
     padding-left: 8px !important;
     padding-right: 8px !important;
+    max-width: 100% !important;
+    width: 100% !important;
   }
 
   /* Navigation adjustments */
@@ -24,11 +39,27 @@
   /* Product cards */
   .MuiCard-root {
     margin-bottom: 12px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .product-image {
     height: 150px !important;
+    width: 100% !important;
     object-fit: cover;
+  }
+
+  /* Ensure all content fits within viewport */
+  * {
+    max-width: 100vw;
+    box-sizing: border-box;
+  }
+
+  /* Fix any potential overflow from flex containers */
+  .MuiBox-root {
+    max-width: 100%;
+    overflow-x: hidden;
   }
 
   /* Typography adjustments */
@@ -89,7 +120,19 @@
   }
 
   .MuiTable-root {
-    min-width: 600px;
+    min-width: 100%;
+    width: 100%;
+  }
+
+  /* Make table cells stack on very small screens */
+  .MuiTableCell-root {
+    padding: 8px 4px;
+    font-size: 0.8rem;
+  }
+
+  /* Hide less important columns on mobile */
+  .mobile-hide {
+    display: none;
   }
 
   /* Floating action button for mobile */

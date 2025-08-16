@@ -152,7 +152,12 @@ const Search = styled('div')(({ theme }) => ({
   [theme.breakpoints.up('sm')]: {
     marginLeft: theme.spacing(1),
     width: 'auto',
-    minWidth: '300px',
+    minWidth: '250px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    minWidth: 'auto',
+    width: '100%',
+    maxWidth: '100%',
   },
 }));
 
