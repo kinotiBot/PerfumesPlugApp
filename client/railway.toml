@@ -2,7 +2,13 @@
 builder = "NIXPACKS"
 
 [build.nixpacksConfig]
-packages = ["nodejs-18_x"]
+packages = ["nodejs-18_x", "npm-8_x"]
+
+[build.nixpacksConfig.phases.setup]
+cmds = ["npm ci"]
+
+[build.nixpacksConfig.phases.build]
+cmds = ["npm run build"]
 
 [deploy]
 startCommand = "npm run serve"
