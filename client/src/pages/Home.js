@@ -6,7 +6,6 @@ import {
   Typography,
   Grid,
   Card,
-  CardMedia,
   CardContent,
   CardActions,
   Button,
@@ -27,7 +26,8 @@ import {
   getOnSalePerfumes,
 } from '../features/perfume/perfumeSlice';
 import { addToCart, addToGuestCartAction } from '../features/cart/cartSlice';
-import { getImageUrl } from '../utils/api';
+
+import OptimizedImage from '../components/common/OptimizedImage';
 import { LocalShipping, VerifiedUser, SupportAgent, Security, ShoppingCart } from '@mui/icons-material';
 import AdminWelcome from '../components/admin/AdminWelcome';
 
@@ -120,11 +120,10 @@ const Home = () => {
           sx={{ right: perfume.on_sale ? '80px' : '10px' }}
         />
       )}
-      <CardMedia
-        component="img"
-        height="280"
-        image={perfume.images && perfume.images.length > 0 ? getImageUrl(perfume.images[0].image) : getImageUrl(perfume.image)}
+      <OptimizedImage
+        src={perfume.images && perfume.images.length > 0 ? perfume.images[0].image : perfume.image}
         alt={perfume.name}
+        height={280}
         sx={{
           transition: 'transform 0.3s ease',
           '&:hover': {

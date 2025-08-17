@@ -5,7 +5,6 @@ import {
   Box,
   Button,
   Card,
-  CardMedia,
   Container,
   Divider,
   Grid,
@@ -33,7 +32,8 @@ import {
   removeFromGuestCartAction,
   clearGuestCartAction,
 } from '../features/cart/cartSlice';
-import { getImageUrl } from '../utils/api';
+
+import OptimizedImage from '../components/common/OptimizedImage';
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -195,23 +195,24 @@ const Cart = () => {
                   <TableRow key={item.id}>
                     <TableCell>
                       <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Card sx={{ width: 80, height: 80, mr: 2, flexShrink: 0 }}>
-                          <CardMedia
-                            component="img"
-                            height="80"
-                            image={
+                        <Card sx={{ width: 80, height: 80, mr: 2 }}>
+                          <OptimizedImage
+                            src={
                               (item.perfume_details?.images?.length > 0)
-                                ? getImageUrl(item.perfume_details.images[0].image)
+                                ? item.perfume_details.images[0].image
                                 : (item.perfume?.images?.length > 0)
-                                ? getImageUrl(item.perfume.images[0].image)
+                                ? item.perfume.images[0].image
                                 : (item.perfume_details?.image)
-                                ? getImageUrl(item.perfume_details.image)
+                                ? item.perfume_details.image
                                 : (item.perfume?.image)
-                                ? getImageUrl(item.perfume.image)
-                                : '/images/placeholder.svg'
+                                ? item.perfume.image
+                                : null
                             }
                             alt={(item.perfume_details?.name || item.perfume?.name) || 'Product'}
-                            sx={{ objectFit: 'contain' }}
+                            height={80}
+                            width={80}
+                            objectFit="contain"
+                            showSkeleton={false}
                           />
                         </Card>
                         <Box>

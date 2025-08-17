@@ -71,6 +71,56 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+// Enhanced fetch handler for mobile image loading
+self.addEventListener('fetch', (event) => {
+  const { request } = event;
+  const url = new URL(request.url);
+  
+  // Handle image requests with mobile optimizations
+  if (request.destination === 'image' || url.pathname.includes('/media/')) {
+    event.respondWith(
+      caches.match(request)
+        .then((cachedResponse) => {
+          // Return cached version if available and not expired
+          if (cachedResponse) {
+            const cacheDate = new Date(cachedResponse.headers.get('date'));
+            const now = new Date();
+            const daysSinceCached = (now - cacheDate) / (1000 * 60 * 60 * 24);
+            
+            // Use cached version if less than 1 day old
+            if (daysSinceCached < 1) {
+              return cachedResponse;
+            }
+          }
+          
+          // Fetch with timeout for mobile networks
+          const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('Network timeout')), 15000);
+          });
+          
+          const fetchPromise = fetch(request, {
+            mode: 'cors',
+            credentials: 'omit'
+          }).then((response) => {
+            if (response && response.status === 200) {
+              const responseClone = response.clone();
+              caches.open('mobile-images-v1').then((cache) => {
+                cache.put(request, responseClone);
+              });
+            }
+            return response;
+          });
+          
+          return Promise.race([fetchPromise, timeoutPromise])
+            .catch(() => {
+              // Fallback to cached version or placeholder
+              return cachedResponse || new Response('', { status: 404 });
+            });
+        })
+    );
+  }
+});
+
 // Background sync for offline orders
 self.addEventListener('sync', (event) => {
   if (event.tag === 'background-sync') {

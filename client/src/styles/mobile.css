@@ -48,6 +48,36 @@
     height: 150px !important;
     width: 100% !important;
     object-fit: cover;
+    /* Mobile browser image optimizations */
+    image-rendering: auto;
+    -webkit-image-smoothing: true;
+    -moz-image-smoothing: true;
+    -ms-image-smoothing: true;
+    image-smoothing: true;
+    /* Prevent image flickering on mobile */
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+
+  /* Optimized image loading for mobile */
+  .MuiCardMedia-root {
+    /* Improve image rendering on mobile */
+    image-rendering: auto !important;
+    -webkit-image-smoothing: true !important;
+    /* Prevent layout shifts during image loading */
+    min-height: inherit;
+    /* Hardware acceleration for smoother rendering */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: transform;
+  }
+
+  /* Loading skeleton optimizations */
+  .MuiSkeleton-root {
+    /* Reduce animation on mobile to save battery */
+    animation-duration: 2s !important;
   }
 
   /* Ensure all content fits within viewport */

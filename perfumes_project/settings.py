@@ -173,11 +173,14 @@ CORS_URLS_REGEX = r'^/(api|media)/.*$'
 # Add your frontend domain when deployed
 if not DEBUG:
     CORS_ALLOWED_ORIGINS.extend([
+        # Vercel deployments
         "https://perfumes-plug-app.vercel.app",
         "https://perfumes-plug-m4bvqs3zv-joel-kinotis-projects.vercel.app",
         "https://perfumes-plug-hd7dnfcmi-joel-kinotis-projects.vercel.app",
         "https://perfumes-plug-gl3acoti3-joel-kinotis-projects.vercel.app",
         "https://perfumes-plug-edccf00hx-joel-kinotis-projects.vercel.app",
+        # Railway frontend deployments (add your Railway frontend URL here)
+        # Example: "https://perfumes-plug-frontend-production.up.railway.app",
         "https://perfumes-plug-hhaba49g1-joel-kinotis-projects.vercel.app",
     ])
 

@@ -11,7 +11,6 @@ import {
   Divider,
   TextField,
   Card,
-  CardMedia,
   Chip,
   Skeleton,
   IconButton,
@@ -38,6 +37,7 @@ import {
 } from '../features/perfume/perfumeSlice';
 import { addToCart, addToGuestCartAction } from '../features/cart/cartSlice';
 import { getImageUrl } from '../utils/api';
+import OptimizedImage from '../components/common/OptimizedImage';
 
 const TabPanel = (props) => {
   const { children, value, index, ...other } = props;
@@ -209,15 +209,15 @@ const PerfumeDetail = () => {
                 sx={{ right: perfume.on_sale ? '80px' : '10px' }}
               />
             )}
-            <CardMedia
-              component="img"
-              image={
+            <OptimizedImage
+              src={
                 perfume.images && perfume.images.length > 0
-                  ? getImageUrl(perfume.images[activeImage].image)
-                  : getImageUrl(perfume.image)
+                  ? perfume.images[activeImage].image
+                  : perfume.image
               }
               alt={perfume.name}
-              sx={{ height: 400, objectFit: 'contain' }}
+              height={400}
+              objectFit="contain"
             />
           </Card>
           {perfume.images && perfume.images.length > 1 && (

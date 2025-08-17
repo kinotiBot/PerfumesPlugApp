@@ -5,7 +5,6 @@ import {
   Box,
   Grid,
   Card,
-  CardMedia,
   CardContent,
   CardActions,
   Typography,
@@ -44,7 +43,8 @@ import {
   getBrands,
 } from '../features/perfume/perfumeSlice';
 import { addToCart, addToGuestCartAction } from '../features/cart/cartSlice';
-import { getImageUrl } from '../utils/api';
+
+import OptimizedImage from '../components/common/OptimizedImage';
 
 const PerfumeList = () => {
   const dispatch = useDispatch();
@@ -331,11 +331,10 @@ const PerfumeList = () => {
             }}
           />
         )}
-        <CardMedia
-          component="img"
-          height="200"
-          image={perfume.images && perfume.images.length > 0 ? getImageUrl(perfume.images[0].image) : getImageUrl(perfume.image)}
+        <OptimizedImage
+          src={perfume.images && perfume.images.length > 0 ? perfume.images[0].image : perfume.image}
           alt={perfume.name}
+          height={200}
           onClick={() => navigate(`/perfumes/${perfume.id}`)}
           sx={{ cursor: 'pointer' }}
         />
