@@ -26,7 +26,7 @@ const ApiTest = () => {
     setTestResults([]);
     
     // Test 1: Check API URL configuration
-    const apiUrl = process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000';
+    const apiUrl = process.env.REACT_APP_API_URL || 'https://perfumesplugapp-production.up.railway.app';
     addResult('API URL Configuration', 'info', `Using API URL: ${apiUrl}`);
     
     // Test 2: Basic connectivity test
