@@ -153,7 +153,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
 ]
 
-# CORS settings for media files
+# CORS settings for media files and mobile compatibility
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_HEADERS = [
     'accept',
@@ -165,6 +165,29 @@ CORS_ALLOWED_HEADERS = [
     'user-agent',
     'x-csrftoken',
     'x-requested-with',
+    'cache-control',
+    'pragma',
+    'sec-fetch-dest',
+    'sec-fetch-mode',
+    'sec-fetch-site',
+]
+
+# Allow all methods for mobile compatibility
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+# Mobile browser compatibility
+CORS_PREFLIGHT_MAX_AGE = 86400  # 24 hours
+CORS_EXPOSE_HEADERS = [
+    'content-length',
+    'content-type',
+    'authorization',
 ]
 
 # Allow CORS for media files
@@ -183,6 +206,10 @@ if not DEBUG:
         # Example: "https://perfumes-plug-frontend-production.up.railway.app",
         "https://perfumes-plug-hhaba49g1-joel-kinotis-projects.vercel.app",
     ])
+    
+    # For production, allow all origins temporarily to debug mobile issues
+    # This should be restricted once the issue is identified
+    CORS_ALLOW_ALL_ORIGINS = True
 
 # CSRF trusted origins for Railway deployment
 CSRF_TRUSTED_ORIGINS = [

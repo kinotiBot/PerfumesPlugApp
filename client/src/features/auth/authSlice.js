@@ -2,10 +2,17 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { getApiUrl } from '../../utils/api';
 
-// Get user token from localStorage
-const userToken = localStorage.getItem('userToken')
-  ? localStorage.getItem('userToken')
-  : null;
+// Get userToken from localStorage with mobile browser compatibility
+const getUserToken = () => {
+  try {
+    return localStorage.getItem('userToken') || null;
+  } catch (error) {
+    console.warn('localStorage not available:', error);
+    return null;
+  }
+};
+
+const userToken = getUserToken();
 
 // Initial state
 const initialState = {
@@ -62,7 +69,15 @@ export const loginUser = createAsyncThunk(
         userData,
         config
       );
-      localStorage.setItem('userToken', data.access);
+      
+      // Store token with mobile browser compatibility
+      try {
+        localStorage.setItem('userToken', data.access);
+      } catch (error) {
+        console.warn('Failed to store token in localStorage:', error);
+        // Token will still be available in Redux state for the session
+      }
+      
       return data;
     } catch (error) {
       console.error('Login error:', error);
@@ -155,7 +170,11 @@ export const checkAuth = createAsyncThunk(
       return data;
     } catch (error) {
       console.error('Auth check error:', error);
-      localStorage.removeItem('userToken');
+      try {
+        localStorage.removeItem('userToken');
+      } catch (storageError) {
+        console.warn('Failed to remove token from localStorage:', storageError);
+      }
       
       if (error.response) {
         const message = error.response.data.message || error.response.data.detail || 'Authentication failed';
@@ -171,7 +190,11 @@ export const checkAuth = createAsyncThunk(
 
 // Logout user
 export const logout = createAsyncThunk('auth/logout', async () => {
-  localStorage.removeItem('userToken');
+  try {
+    localStorage.removeItem('userToken');
+  } catch (error) {
+    console.warn('Failed to remove token from localStorage:', error);
+  }
   return null;
 });
 
