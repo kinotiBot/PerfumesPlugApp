@@ -1,6 +1,6 @@
 // API configuration and utility functions
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://perfumesplugapp-production.up.railway.app';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://backend-production-4fa6.up.railway.app';
 
 // Function to get full image URL with mobile browser compatibility
 export const getImageUrl = (imagePath) => {

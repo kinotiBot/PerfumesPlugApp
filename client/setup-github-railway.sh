@@ -112,7 +112,7 @@ echo "   - Root Directory: client (if using subfolder)"
 echo "   - Build Command: npm run build"
 echo "   - Start Command: (leave empty)"
 echo "6. Add environment variable:"
-echo "   REACT_APP_API_URL=https://perfumesplugapp-production.up.railway.app"
+echo "   REACT_APP_API_URL=https://backend-production-4fa6.up.railway.app"
 
 echo ""
 echo "✅ Setup complete! Follow the Railway deployment steps above."
