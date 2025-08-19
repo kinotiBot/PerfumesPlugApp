@@ -1,8 +1,5 @@
 FROM python:3.11-slim
 
-# Railway service ID for cache mount
-ARG RAILWAY_SERVICE_ID
-
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -21,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Install Python dependencies (cache pip downloads)
 COPY requirements.txt .
-RUN --mount=type=cache,id=s/${RAILWAY_SERVICE_ID}-pip-cache,target=/root/.cache/pip \
+RUN --mount=type=cache,id=s/395d76c6-a525-45be-ba88-ed89877cf1c7-pip-cache,target=/root/.cache/pip \
     pip install --no-cache-dir -r requirements.txt
 
 # Copy project (exclude unnecessary files with .dockerignore)
