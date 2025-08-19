@@ -202,8 +202,8 @@ if not DEBUG:
         "https://perfumes-plug-hd7dnfcmi-joel-kinotis-projects.vercel.app",
         "https://perfumes-plug-gl3acoti3-joel-kinotis-projects.vercel.app",
         "https://perfumes-plug-edccf00hx-joel-kinotis-projects.vercel.app",
-        # Railway frontend deployments (add your Railway frontend URL here)
-        # Example: "https://perfumes-plug-frontend-production.up.railway.app",
+        # Railway frontend deployments
+        "https://perfumesplugapp-production-dcc4.up.railway.app",
         "https://perfumes-plug-hhaba49g1-joel-kinotis-projects.vercel.app",
     ])
     
@@ -214,6 +214,7 @@ if not DEBUG:
 # CSRF trusted origins for Railway deployment
 CSRF_TRUSTED_ORIGINS = [
     "https://perfumesplugapp-production.up.railway.app",
+    "https://perfumesplugapp-production-dcc4.up.railway.app",
     "https://perfumes-plug-app.vercel.app",
     "https://perfumes-plug-m4bvqs3zv-joel-kinotis-projects.vercel.app",
     "https://perfumes-plug-hd7dnfcmi-joel-kinotis-projects.vercel.app",
