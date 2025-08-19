@@ -145,6 +145,80 @@ export const getBrands = createAsyncThunk(
   }
 );
 
+// Create brand
+export const createBrand = createAsyncThunk(
+  'perfume/createBrand',
+  async (brandData, { rejectWithValue, getState }) => {
+    try {
+      const { auth } = getState();
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${auth.userToken}`,
+        },
+      };
+      
+      const { data } = await axios.post(getApiUrl('/api/perfumes/brands/'), brandData, config);
+      return data;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);
+
+// Update brand
+export const updateBrand = createAsyncThunk(
+  'perfume/updateBrand',
+  async ({ slug, brandData }, { rejectWithValue, getState }) => {
+    try {
+      const { auth } = getState();
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${auth.userToken}`,
+        },
+      };
+      
+      const { data } = await axios.put(getApiUrl(`/api/perfumes/brands/${slug}/`), brandData, config);
+      return data;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);
+
+// Delete brand
+export const deleteBrand = createAsyncThunk(
+  'perfume/deleteBrand',
+  async (slug, { rejectWithValue, getState }) => {
+    try {
+      const { auth } = getState();
+      const config = {
+        headers: {
+          Authorization: `Bearer ${auth.userToken}`,
+        },
+      };
+      
+      await axios.delete(getApiUrl(`/api/perfumes/brands/${slug}/`), config);
+      return slug;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);
+
 // Delete perfume
 export const deletePerfume = createAsyncThunk(
   'perfume/deletePerfume',
@@ -278,6 +352,45 @@ const perfumeSlice = createSlice({
         state.perfumes = state.perfumes.filter(perfume => perfume.slug !== payload);
       })
       .addCase(deletePerfume.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload;
+      })
+      // Create brand
+      .addCase(createBrand.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(createBrand.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.brands.push(payload);
+      })
+      .addCase(createBrand.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload;
+      })
+      // Update brand
+      .addCase(updateBrand.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateBrand.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        const index = state.brands.findIndex(brand => brand.slug === payload.slug);
+        if (index !== -1) {
+          state.brands[index] = payload;
+        }
+      })
+      .addCase(updateBrand.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.error = payload;
+      })
+      // Delete brand
+      .addCase(deleteBrand.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteBrand.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.brands = state.brands.filter(brand => brand.slug !== payload);
+      })
+      .addCase(deleteBrand.rejected, (state, { payload }) => {
         state.loading = false;
         state.error = payload;
       });

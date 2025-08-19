@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
   Typography,
@@ -16,6 +17,8 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  CircularProgress,
+  Alert,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -23,21 +26,20 @@ import {
   Delete as DeleteIcon,
 } from '@mui/icons-material';
 import AdminLayout from '../../components/admin/AdminLayout';
-
-// Mock data for brands
-const mockBrands = [
-  { id: 1, name: 'Chanel', country: 'France', founded: 1909, logo: 'chanel_logo.png' },
-  { id: 2, name: 'Dior', country: 'France', founded: 1946, logo: 'dior_logo.png' },
-  { id: 3, name: 'Gucci', country: 'Italy', founded: 1921, logo: 'gucci_logo.png' },
-  { id: 4, name: 'Tom Ford', country: 'USA', founded: 2005, logo: 'tomford_logo.png' },
-];
+import { getBrands, createBrand, updateBrand, deleteBrand } from '../../features/perfume/perfumeSlice';
 
 const Brands = () => {
-  const [brands, setBrands] = useState(mockBrands);
+  const dispatch = useDispatch();
+  const { brands, loading, error } = useSelector((state) => state.perfume);
+  
   const [open, setOpen] = useState(false);
   const [currentBrand, setCurrentBrand] = useState({ name: '', country: '', founded: '', logo: '' });
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    dispatch(getBrands());
+  }, [dispatch]);
 
   const handleOpen = () => {
     setCurrentBrand({ name: '', country: '', founded: '', logo: '' });
@@ -55,8 +57,10 @@ const Brands = () => {
     setOpen(true);
   };
 
-  const handleDelete = (id) => {
-    setBrands(brands.filter(brand => brand.id !== id));
+  const handleDelete = (slug) => {
+    if (window.confirm('Are you sure you want to delete this brand?')) {
+      dispatch(deleteBrand(slug));
+    }
   };
 
   const handleChange = (e) => {
@@ -64,29 +68,42 @@ const Brands = () => {
     setCurrentBrand(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = () => {
-    if (isEditing) {
-      setBrands(brands.map(brand => 
-        brand.id === currentBrand.id ? currentBrand : brand
-      ));
-    } else {
-      const newBrand = {
-        id: Math.max(...brands.map(b => b.id), 0) + 1,
-        ...currentBrand
-      };
-      setBrands([...brands, newBrand]);
+  const handleSubmit = async () => {
+    try {
+      if (isEditing) {
+        await dispatch(updateBrand({ slug: currentBrand.slug, brandData: currentBrand })).unwrap();
+      } else {
+        await dispatch(createBrand(currentBrand)).unwrap();
+      }
+      handleClose();
+    } catch (error) {
+      console.error('Error saving brand:', error);
     }
-    handleClose();
   };
 
-  const filteredBrands = brands.filter(brand =>
+  const filteredBrands = brands ? brands.filter(brand =>
     brand.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     brand.country.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ) : [];
+
+  if (loading && brands.length === 0) {
+    return (
+      <AdminLayout>
+        <Box sx={{ p: 3, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+          <CircularProgress />
+        </Box>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout>
       <Box sx={{ p: 3 }}>
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
           <Typography variant="h4" component="h1" gutterBottom>
             Brands Management
@@ -115,7 +132,7 @@ const Brands = () => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>ID</TableCell>
+                  <TableCell>Slug</TableCell>
                   <TableCell>Name</TableCell>
                   <TableCell>Country</TableCell>
                   <TableCell>Founded</TableCell>
@@ -125,22 +142,24 @@ const Brands = () => {
               </TableHead>
               <TableBody>
                 {filteredBrands.map((brand) => (
-                  <TableRow key={brand.id}>
-                    <TableCell>{brand.id}</TableCell>
+                  <TableRow key={brand.slug}>
+                    <TableCell>{brand.slug}</TableCell>
                     <TableCell>{brand.name}</TableCell>
                     <TableCell>{brand.country}</TableCell>
                     <TableCell>{brand.founded}</TableCell>
-                    <TableCell>{brand.logo}</TableCell>
+                    <TableCell>{brand.logo || 'N/A'}</TableCell>
                     <TableCell align="right">
                       <IconButton
                         color="primary"
                         onClick={() => handleEdit(brand)}
+                        disabled={loading}
                       >
                         <EditIcon />
                       </IconButton>
                       <IconButton
                         color="error"
-                        onClick={() => handleDelete(brand.id)}
+                        onClick={() => handleDelete(brand.slug)}
+                        disabled={loading}
                       >
                         <DeleteIcon />
                       </IconButton>
@@ -202,9 +221,15 @@ const Brands = () => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit} variant="contained" color="primary">
-            {isEditing ? 'Update' : 'Add'}
+          <Button onClick={handleClose} disabled={loading}>Cancel</Button>
+          <Button 
+            onClick={handleSubmit} 
+            variant="contained" 
+            color="primary"
+            disabled={loading || !currentBrand.name.trim()}
+            startIcon={loading ? <CircularProgress size={20} /> : null}
+          >
+            {loading ? 'Saving...' : (isEditing ? 'Update' : 'Add')}
           </Button>
         </DialogActions>
       </Dialog>
