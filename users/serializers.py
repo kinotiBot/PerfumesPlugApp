@@ -43,34 +43,32 @@ class UserLoginSerializer(serializers.Serializer):
     password = serializers.CharField(required=True, write_only=True, style={'input_type': 'password'})
     
     def validate(self, attrs):
-        import logging
-        logger = logging.getLogger(__name__)
-        
         email = attrs.get('email')
         password = attrs.get('password')
         
-        logger.info(f"Login attempt for email: {email}")
+        print(f"DEBUG: Login attempt for email: {email}")
         
         if email and password:
             # Authenticate without binding to request to avoid backend-specific request requirements
             user = authenticate(username=email, password=password)
-            logger.info(f"authenticate() result: {user}")
+            print(f"DEBUG: authenticate() result: {user}")
 
             # Fallback: explicitly verify password if authenticate() returns None
             if not user:
                 try:
                     user_obj = User.objects.get(email=email)
-                    logger.info(f"Found user: {user_obj.email}, active: {user_obj.is_active}")
+                    print(f"DEBUG: Found user: {user_obj.email}, active: {user_obj.is_active}")
                     password_check = user_obj.check_password(password)
-                    logger.info(f"Password check result: {password_check}")
+                    print(f"DEBUG: Password check result: {password_check}")
                     if password_check:
                         user = user_obj
+                        print(f"DEBUG: Using fallback authentication for {email}")
                 except User.DoesNotExist:
-                    logger.info(f"User with email {email} does not exist")
+                    print(f"DEBUG: User with email {email} does not exist")
                     user = None
             
             if not user:
-                logger.error(f"Authentication failed for {email}")
+                print(f"DEBUG: Authentication failed for {email}")
                 msg = _('Unable to log in with provided credentials.')
                 raise serializers.ValidationError(msg, code='authorization')
         else:
