@@ -3,6 +3,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import get_user_model
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 from .models import Address
 from .serializers import (
     UserSerializer, UserRegisterSerializer, UserLoginSerializer,
@@ -72,6 +74,7 @@ class RegisterView(generics.CreateAPIView):
             "access": str(refresh.access_token),
         }, status=status.HTTP_201_CREATED)
 
+@method_decorator(csrf_exempt, name='dispatch')
 class LoginView(generics.GenericAPIView):
     permission_classes = [permissions.AllowAny]
     serializer_class = UserLoginSerializer
