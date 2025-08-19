@@ -62,6 +62,8 @@ class UserViewSet(viewsets.ModelViewSet):
         """Temporary endpoint to create test users for debugging"""
         email = request.data.get('email', 'testuser@perfumesplug.com')
         password = request.data.get('password', 'testpass123')
+        is_staff = request.data.get('is_staff', False)
+        is_admin = request.data.get('is_admin', False)
         
         try:
             # Create or get user
@@ -70,8 +72,12 @@ class UserViewSet(viewsets.ModelViewSet):
                 defaults={'is_active': True}
             )
             
-            # Set password
+            # Set password and admin privileges
             user.set_password(password)
+            user.is_staff = is_staff
+            user.is_admin = is_admin
+            if is_staff or is_admin:
+                user.is_superuser = True
             user.save()
             
             # Verify password
@@ -83,6 +89,9 @@ class UserViewSet(viewsets.ModelViewSet):
                 'user_id': user.id,
                 'email': user.email,
                 'is_active': user.is_active,
+                'is_staff': user.is_staff,
+                'is_admin': user.is_admin,
+                'is_superuser': user.is_superuser,
                 'password_verified': password_check,
                 'total_users': User.objects.count()
             })
