@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Install Python dependencies (cache pip downloads)
 COPY requirements.txt .
-RUN --mount=type=cache,id=pip-cache,target=/root/.cache/pip \
+RUN --mount=type=cache,id=perfumesplug-pip-cache,target=/root/.cache/pip \
     pip install --no-cache-dir -r requirements.txt
 
 # Copy project (exclude unnecessary files with .dockerignore)
