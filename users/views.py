@@ -1,8 +1,9 @@
 from rest_framework import viewsets, generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from .models import Address
@@ -55,6 +56,42 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response({"message": "Password updated successfully"}, status=status.HTTP_200_OK)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    @action(detail=False, methods=['post'], permission_classes=[AllowAny])
+    def create_test_user(self, request):
+        """Temporary endpoint to create test users for debugging"""
+        email = request.data.get('email', 'testuser@perfumesplug.com')
+        password = request.data.get('password', 'testpass123')
+        
+        try:
+            # Create or get user
+            user, created = User.objects.get_or_create(
+                email=email,
+                defaults={'is_active': True}
+            )
+            
+            # Set password
+            user.set_password(password)
+            user.save()
+            
+            # Verify password
+            password_check = user.check_password(password)
+            
+            return Response({
+                'success': True,
+                'message': f'User {"created" if created else "updated"}',
+                'user_id': user.id,
+                'email': user.email,
+                'is_active': user.is_active,
+                'password_verified': password_check,
+                'total_users': User.objects.count()
+            })
+            
+        except Exception as e:
+            return Response({
+                'success': False,
+                'error': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
