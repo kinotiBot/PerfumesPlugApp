@@ -1,4 +1,4 @@
-const CACHE_NAME = 'perfumes-plug-v1';
+const CACHE_NAME = 'perfumes-plug-v2';
 const urlsToCache = [
   '/',
   '/static/js/bundle.js',
