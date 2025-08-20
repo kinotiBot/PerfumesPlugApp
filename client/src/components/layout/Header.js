@@ -95,6 +95,10 @@ const FloatingCartButton = styled(IconButton)(({ theme }) => ({
   '&:active': {
     transform: 'translateY(0) scale(0.98)',
   },
+  [theme.breakpoints.down('sm')]: {
+    width: '48px',
+    height: '48px',
+  },
 }));
 
 const FloatingCartBadge = styled(Badge, {
@@ -255,7 +259,11 @@ const Header = () => {
   return (
     <StyledAppBar position="sticky" elevation={0}>
       <Container maxWidth="xl">
-        <Toolbar sx={{ py: 1, minHeight: '72px' }}>
+        <Toolbar sx={{ 
+          py: { xs: 0.5, md: 1 }, 
+          minHeight: { xs: '64px', md: '72px' },
+          px: { xs: 1, md: 2 },
+        }}>
           {/* Mobile menu button */}
           {isMobile && (
             <IconButton
@@ -270,14 +278,23 @@ const Header = () => {
           )}
 
           {/* Logo */}
-          <LogoContainer component={RouterLink} to="/" sx={{ mr: 4 }}>
+          <LogoContainer 
+            component={RouterLink} 
+            to="/" 
+            sx={{ 
+              mr: { xs: 1, md: 4 },
+              flexShrink: 0,
+            }}
+          >
             <LogoImage 
               src="/images/perfumes_plug_logo.jpg" 
               alt="Perfumes Plug Rwanda Logo"
             />
-            <LogoText variant="h6" noWrap>
-              Perfumes Plug Rwanda
-            </LogoText>
+            {!isMobile && (
+              <LogoText variant="h6" noWrap>
+                Perfumes Plug Rwanda
+              </LogoText>
+            )}
           </LogoContainer>
 
           {/* Desktop Navigation */}
@@ -301,12 +318,18 @@ const Header = () => {
           )}
 
           {/* Search Bar */}
-          <Search sx={{ mx: 2, flexGrow: isMobile ? 1 : 0 }}>
+          <Search 
+            sx={{ 
+              mx: { xs: 1, md: 2 }, 
+              flexGrow: isMobile ? 1 : 0,
+              maxWidth: { xs: '200px', sm: '250px', md: 'none' },
+            }}
+          >
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
-              placeholder="Search perfumes..."
+              placeholder={isMobile ? "Search..." : "Search perfumes..."}
               inputProps={{ 'aria-label': 'search' }}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -319,7 +342,12 @@ const Header = () => {
           </Search>
 
           {/* Right side actions */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: { xs: 0.5, md: 1 },
+            flexShrink: 0,
+          }}>
             {/* Floating Cart */}
             <FloatingCartButton
               component={RouterLink}
@@ -376,17 +404,24 @@ const Header = () => {
                 </Menu>
               </>
             ) : (
-              <Box sx={{ display: 'flex', gap: 1 }}>
+              <Box sx={{ 
+                display: 'flex', 
+                gap: { xs: 0.5, md: 1 },
+                flexShrink: 0,
+              }}>
                 <Button
                   component={RouterLink}
                   to="/login"
                   variant="outlined"
-                  size="small"
+                  size={isMobile ? "small" : "small"}
                   sx={{
                     borderColor: '#FFD700',
                     color: '#FFD700',
                     fontWeight: 600,
                     borderRadius: '8px',
+                    fontSize: { xs: '0.75rem', md: '0.875rem' },
+                    px: { xs: 1, md: 2 },
+                    minWidth: { xs: 'auto', md: '64px' },
                     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                     '&:hover': {
                       backgroundColor: 'rgba(255, 215, 0, 0.1)',
@@ -397,18 +432,21 @@ const Header = () => {
                     }
                   }}
                 >
-                  Login
+                  {isMobile ? 'Login' : 'Login'}
                 </Button>
                 <Button
                   component={RouterLink}
                   to="/register"
                   variant="contained"
-                  size="small"
+                  size={isMobile ? "small" : "small"}
                   sx={{
                     background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
                     color: '#1A1A1A',
                     fontWeight: 700,
                     borderRadius: '8px',
+                    fontSize: { xs: '0.75rem', md: '0.875rem' },
+                    px: { xs: 1, md: 2 },
+                    minWidth: { xs: 'auto', md: '64px' },
                     boxShadow: '0 4px 12px rgba(255, 215, 0, 0.3)',
                     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                     '&:hover': {
@@ -418,7 +456,7 @@ const Header = () => {
                     }
                   }}
                 >
-                  Sign Up
+                  {isMobile ? 'Sign Up' : 'Sign Up'}
                 </Button>
               </Box>
             )}
@@ -440,10 +478,221 @@ const Header = () => {
             boxSizing: 'border-box',
             width: 280,
             borderRadius: '0 16px 16px 0',
+            backgroundColor: '#0A0A0A',
+            borderRight: '1px solid rgba(255, 255, 255, 0.1)',
           },
         }}
       >
-        {/* ... existing mobile drawer content ... */}
+        <Box sx={{ p: 2 }}>
+          {/* Mobile Logo */}
+          <LogoContainer component={RouterLink} to="/" onClick={handleDrawerToggle} sx={{ mb: 3 }}>
+            <LogoImage 
+              src="/images/perfumes_plug_logo.jpg" 
+              alt="Perfumes Plug Rwanda Logo"
+            />
+            <LogoText variant="h6" noWrap>
+              Perfumes Plug Rwanda
+            </LogoText>
+          </LogoContainer>
+          
+          <Divider sx={{ mb: 2, borderColor: 'rgba(255, 255, 255, 0.1)' }} />
+          
+          {/* Mobile Navigation Links */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <Button
+              component={RouterLink}
+              to="/"
+              onClick={handleDrawerToggle}
+              fullWidth
+              sx={{
+                justifyContent: 'flex-start',
+                color: '#F8F8F8',
+                py: 1.5,
+                px: 2,
+                borderRadius: 2,
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                  color: '#FFD700',
+                },
+              }}
+            >
+              Home
+            </Button>
+            <Button
+              component={RouterLink}
+              to="/perfumes"
+              onClick={handleDrawerToggle}
+              fullWidth
+              sx={{
+                justifyContent: 'flex-start',
+                color: '#F8F8F8',
+                py: 1.5,
+                px: 2,
+                borderRadius: 2,
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                  color: '#FFD700',
+                },
+              }}
+            >
+              Shop
+            </Button>
+            <Button
+              component={RouterLink}
+              to="/categories"
+              onClick={handleDrawerToggle}
+              fullWidth
+              sx={{
+                justifyContent: 'flex-start',
+                color: '#F8F8F8',
+                py: 1.5,
+                px: 2,
+                borderRadius: 2,
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                  color: '#FFD700',
+                },
+              }}
+            >
+              Categories
+            </Button>
+            {isAuthenticated && user?.is_staff && (
+              <Button
+                component={RouterLink}
+                to="/admin"
+                onClick={handleDrawerToggle}
+                fullWidth
+                sx={{
+                  justifyContent: 'flex-start',
+                  color: '#F8F8F8',
+                  py: 1.5,
+                  px: 2,
+                  borderRadius: 2,
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                    color: '#FFD700',
+                  },
+                }}
+              >
+                Admin
+              </Button>
+            )}
+          </Box>
+          
+          <Divider sx={{ my: 2, borderColor: 'rgba(255, 255, 255, 0.1)' }} />
+          
+          {/* Mobile Auth Buttons */}
+          {isAuthenticated ? (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <Button
+                component={RouterLink}
+                to="/profile"
+                onClick={handleDrawerToggle}
+                fullWidth
+                startIcon={<AccountCircle />}
+                sx={{
+                  justifyContent: 'flex-start',
+                  color: '#F8F8F8',
+                  py: 1.5,
+                  px: 2,
+                  borderRadius: 2,
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                    color: '#FFD700',
+                  },
+                }}
+              >
+                Profile
+              </Button>
+              <Button
+                component={RouterLink}
+                to="/orders"
+                onClick={handleDrawerToggle}
+                fullWidth
+                startIcon={<Receipt />}
+                sx={{
+                  justifyContent: 'flex-start',
+                  color: '#F8F8F8',
+                  py: 1.5,
+                  px: 2,
+                  borderRadius: 2,
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                    color: '#FFD700',
+                  },
+                }}
+              >
+                Orders
+              </Button>
+              <Button
+                onClick={() => {
+                  handleLogout();
+                  handleDrawerToggle();
+                }}
+                fullWidth
+                startIcon={<Logout />}
+                sx={{
+                  justifyContent: 'flex-start',
+                  color: '#F8F8F8',
+                  py: 1.5,
+                  px: 2,
+                  borderRadius: 2,
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                    color: '#FF6B6B',
+                  },
+                }}
+              >
+                Logout
+              </Button>
+            </Box>
+          ) : (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <Button
+                component={RouterLink}
+                to="/login"
+                onClick={handleDrawerToggle}
+                variant="outlined"
+                fullWidth
+                sx={{
+                  borderColor: '#FFD700',
+                  color: '#FFD700',
+                  fontWeight: 600,
+                  py: 1.5,
+                  borderRadius: 2,
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                    borderColor: '#FFA500',
+                    color: '#FFA500',
+                  },
+                }}
+              >
+                Login
+              </Button>
+              <Button
+                component={RouterLink}
+                to="/register"
+                onClick={handleDrawerToggle}
+                variant="contained"
+                fullWidth
+                sx={{
+                  background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+                  color: '#1A1A1A',
+                  fontWeight: 700,
+                  py: 1.5,
+                  borderRadius: 2,
+                  boxShadow: '0 4px 12px rgba(255, 215, 0, 0.3)',
+                  '&:hover': {
+                    background: 'linear-gradient(135deg, #FFA500 0%, #FF8C00 100%)',
+                    boxShadow: '0 6px 20px rgba(255, 215, 0, 0.4)',
+                  },
+                }}
+              >
+                Sign Up
+              </Button>
+            </Box>
+          )}
+        </Box>
       </Drawer>
     </StyledAppBar>
   );
