@@ -55,7 +55,7 @@ const Home = () => {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 4,
+    slidesToShow: 5,
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 3000,
@@ -63,19 +63,19 @@ const Home = () => {
       {
         breakpoint: 1200,
         settings: {
-          slidesToShow: 3,
+          slidesToShow: 4,
         },
       },
       {
         breakpoint: 900,
         settings: {
-          slidesToShow: 2,
+          slidesToShow: 3,
         },
       },
       {
         breakpoint: 600,
         settings: {
-          slidesToShow: 1,
+          slidesToShow: 2,
         },
       },
     ],
@@ -86,18 +86,18 @@ const Home = () => {
       key={perfume.id}
       className="product-card luxury-transition"
       sx={{ 
-        m: 2, 
+        m: 1, 
         height: '100%', 
         display: 'flex', 
         flexDirection: 'column',
         border: '1px solid rgba(255, 215, 0, 0.2)',
-        borderRadius: 3,
+        borderRadius: 2,
         overflow: 'hidden',
         position: 'relative',
         '&:hover': {
-          transform: 'translateY(-8px) scale(1.02)',
-          boxShadow: '0 20px 40px rgba(255, 215, 0, 0.2), 0 8px 24px rgba(0, 0, 0, 0.15)',
-          borderColor: 'rgba(255, 215, 0, 0.5)',
+          transform: 'translateY(-4px) scale(1.01)',
+          boxShadow: '0 10px 20px rgba(255, 215, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.1)',
+          borderColor: 'rgba(255, 215, 0, 0.3)',
         }
       }}
     >
@@ -123,7 +123,7 @@ const Home = () => {
       <OptimizedImage
         src={perfume.images && perfume.images.length > 0 ? perfume.images[0].image : perfume.image}
         alt={perfume.name}
-        height={280}
+        height={200}
         sx={{
           transition: 'transform 0.3s ease',
           '&:hover': {
@@ -131,7 +131,7 @@ const Home = () => {
           }
         }}
       />
-      <CardContent sx={{ flexGrow: 1, p: 3 }}>
+      <CardContent sx={{ flexGrow: 1, p: 2 }}>
         <Typography variant="h6" component="div" sx={{ mb: 1, lineHeight: 1.3 }}>
           <span className="brand-name" style={{ color: '#FFD700', fontWeight: 600, fontSize: '0.9rem' }}>
             {perfume.brand ? perfume.brand.name : ''}
@@ -187,7 +187,7 @@ const Home = () => {
           )}
         </Box>
       </CardContent>
-      <CardActions sx={{ p: 3, pt: 0 }}>
+      <CardActions sx={{ p: 2, pt: 0 }}>
         <Button
           size="large"
           variant="contained"
@@ -199,7 +199,7 @@ const Home = () => {
             color: '#FFD700',
             border: '2px solid #FFD700',
             fontWeight: 700,
-            py: 1.5,
+            py: 1,
             borderRadius: 2,
             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             '&:hover': {
