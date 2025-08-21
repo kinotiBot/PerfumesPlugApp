@@ -294,11 +294,7 @@ const OrderDetail = () => {
                             <CardMedia
                               component="img"
                               height="60"
-                              image={
-                                item.perfume.images && item.perfume.images.length > 0
-                                  ? getImageUrl(item.perfume.images[0].image)
-                                  : getImageUrl(item.perfume.image)
-                              }
+                              image={getImageUrl(item.perfume.image)}
                               alt={item.perfume.name}
                               sx={{ objectFit: 'contain' }}
                             />

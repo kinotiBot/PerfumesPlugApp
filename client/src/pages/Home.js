@@ -121,7 +121,7 @@ const Home = () => {
         />
       )}
       <OptimizedImage
-        src={perfume.images && perfume.images.length > 0 ? perfume.images[0].image : perfume.image}
+        src={perfume.image}
         alt={perfume.name}
         height={200}
         sx={{

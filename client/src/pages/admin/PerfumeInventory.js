@@ -498,11 +498,7 @@ const PerfumeInventory = () => {
                           <CardMedia
                             component="img"
                             height="60"
-                            image={
-                              perfume.images && perfume.images.length > 0
-                                ? perfume.images[0].image
-                                : 'https://via.placeholder.com/60?text=No+Image'
-                            }
+                            image={perfume.image || 'https://via.placeholder.com/60?text=No+Image'}
                             alt={perfume.name}
                             sx={{ objectFit: 'contain' }}
                           />

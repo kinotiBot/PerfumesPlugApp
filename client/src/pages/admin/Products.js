@@ -438,12 +438,7 @@ const Products = () => {
                         <CardMedia
                           component="img"
                           height="60"
-                          image={
-                            getImageUrl(
-                              perfume.image ||
-                              (perfume.images && perfume.images.length > 0 ? perfume.images[0].image : null)
-                            ) || '/images/placeholder-perfume.svg'
-                          }
+                          image={getImageUrl(perfume.image) || '/images/placeholder-perfume.svg'}
                           alt={perfume.name}
                           sx={{ objectFit: 'contain' }}
                         />
