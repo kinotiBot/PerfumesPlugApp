@@ -17,4 +17,4 @@ restartPolicyMaxRetries = 10
 
 [env]
 NODE_ENV = "production"
-REACT_APP_API_URL = "https://perfumesplugapp-production.up.railway.app"
+REACT_APP_API_URL = "https://backend-production-4fa6.up.railway.app"
