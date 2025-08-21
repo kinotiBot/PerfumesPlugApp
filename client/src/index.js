@@ -17,17 +17,15 @@ import './styles/mobile.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <BrowserRouter>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <App />
-          <ToastContainer position="top-right" autoClose={3000} />
-        </ThemeProvider>
-      </BrowserRouter>
-    </Provider>
-  </React.StrictMode>
+  <Provider store={store}>
+    <BrowserRouter>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <App />
+        <ToastContainer position="top-right" autoClose={3000} />
+      </ThemeProvider>
+    </BrowserRouter>
+  </Provider>
 );
 
 // Register service worker for PWA functionality
